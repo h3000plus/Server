@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 });
 async function main() {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/marketplace');
+        await mongoose.connect(process.env.DB_URI);
         console.log('mongoose connected');
         app.listen(port, () => {
             console.log(`App is listening on port ${port}`);

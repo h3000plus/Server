@@ -3,6 +3,7 @@
 
 import { Request, Response } from "express";
 import { createMenuItem, getMenuItemById, getMenuItemByResId, searchRestaurantItems } from "../models/item/query.js";
+import { getItemDetails, getMenuItemsByRestaurant } from "../service/restaurant.service.js";
 export const createMenuItemController = async(req: Request, res: Response)=>{
     try {
         const objectOfMenuItem = {... req.body};
@@ -17,7 +18,7 @@ export const getMenuItemByIdController = async(req: Request, res: Response)=>{
     try {
         const id = req.params.item_id;
         console.log('itemId',id)
-        const oneMenuItem = await getMenuItemById(id);
+        const oneMenuItem = await getItemDetails(id);
         res.status(200).json(oneMenuItem);
     } catch (error: any) {
         res.status(500).json({error: error.message});
@@ -27,7 +28,8 @@ export const getMenuItemByIdController = async(req: Request, res: Response)=>{
 export const getMenuItemByResIdController = async(req: Request, res: Response)=>{
     try {
         const id = req.params.res_id;
-        const resItems = await getMenuItemByResId(id);
+        
+        const resItems = await getMenuItemsByRestaurant(id);
         res.status(200).json(resItems);
     } catch (error: any) {
         res.status(500).json({error: error.message});

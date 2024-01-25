@@ -1,5 +1,5 @@
-import { getAllDeliveryRestaurant, createRestaurant, searchAllDeliveryRestaurant, getRestaurantById, getAllRestaurantsByCuisine } from "../models/restaurant/query.js";
-import { getCuisines, getFilteredRestaurants } from "../service/restaurant.service.js";
+import { getAllDeliveryRestaurant, createRestaurant, searchAllDeliveryRestaurant, getAllRestaurantsByCuisine } from "../models/restaurant/query.js";
+import { getCuisines, getFilteredRestaurants, getRestaurantDetails } from "../service/restaurant.service.js";
 export const getAllDeliveryRestaurantController = async (req, res) => {
     try {
         const deliveryRestaurants = await getAllDeliveryRestaurant();
@@ -64,7 +64,7 @@ export const searchAllDeliveryRestaurantsController = async (req, res) => {
 export const getRestaurantByIdController = async (req, res) => {
     try {
         const restaurantId = req.params.restaurant_id;
-        const restaurant = await getRestaurantById(restaurantId);
+        const restaurant = await getRestaurantDetails(restaurantId);
         if (restaurant) {
             res.status(200).json(restaurant);
         }

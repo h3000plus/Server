@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getAllDeliveryRestaurant, createRestaurant, searchAllDeliveryRestaurant, getRestaurantById, getAllRestaurantsByCuisine } from "../models/restaurant/query.js";
-import { getCuisines, getFilteredRestaurants } from "../service/restaurant.service.js";
+import { getCuisines, getFilteredRestaurants, getRestaurantDetails } from "../service/restaurant.service.js";
 
 export const getAllDeliveryRestaurantController = async (req: Request, res: Response) => {
     try {
@@ -78,7 +78,7 @@ export const getRestaurantByIdController = async (req: Request, res: Response): 
 
         const restaurantId = req.params.restaurant_id;
 
-        const restaurant = await getRestaurantById(restaurantId);
+        const restaurant = await getRestaurantDetails(restaurantId)
 
         if (restaurant) {
             res.status(200).json(restaurant);

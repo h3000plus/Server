@@ -1,4 +1,5 @@
-import { createMenuItem, getMenuItemById, getMenuItemByResId, searchRestaurantItems } from "../models/item/query.js";
+import { createMenuItem, searchRestaurantItems } from "../models/item/query.js";
+import { getItemDetails, getMenuItemsByRestaurant } from "../service/restaurant.service.js";
 export const createMenuItemController = async (req, res) => {
     try {
         const objectOfMenuItem = { ...req.body };
@@ -13,7 +14,7 @@ export const getMenuItemByIdController = async (req, res) => {
     try {
         const id = req.params.item_id;
         console.log('itemId', id);
-        const oneMenuItem = await getMenuItemById(id);
+        const oneMenuItem = await getItemDetails(id);
         res.status(200).json(oneMenuItem);
     }
     catch (error) {
@@ -23,7 +24,7 @@ export const getMenuItemByIdController = async (req, res) => {
 export const getMenuItemByResIdController = async (req, res) => {
     try {
         const id = req.params.res_id;
-        const resItems = await getMenuItemByResId(id);
+        const resItems = await getMenuItemsByRestaurant(id);
         res.status(200).json(resItems);
     }
     catch (error) {

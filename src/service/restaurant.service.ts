@@ -56,8 +56,145 @@ export async function getCuisines() {
     }
 }
 
+export async function getMenuItemsByRestaurant(id : string){
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': process.env.SKELETON_TOKEN,
+    };
+
+    // console.log(`${process.env.MENU_ITEMS}/menu/one-restaurant-menu/${id}`)
+    const response =  await axios.get(`${process.env.MENU_ITEMS}menu/one-restaurant-menu/${id}`,  {headers})
+    const data = response.data;
+    
+    // return data.map((menuItem)=>{
+
+    // })
+    
+    // let categories: string[] = [];
+    // let items: any = {}
+
+    // for (let i = 0; i < data.length; i++) {
+    //     let catg = data[i].categoryName;
+    //     if (!categories.includes(catg)) {
+    //         categories.push(catg);
+    //     }
+    // }
+
+    // for (let i = 0; i < data.length; i++) {
+    //     const item = data[i];
+    //     items['all'].push(item);
+    //     if (categories.includes(item.categoryName)) {
+    //         items[item.categoryName].push(item);
+    //     }
+    // }
+
+    interface Item {
+        _id : string,
+        name : string,
+        price : string,
+        description : string,
+        categoryName: string,
+        image : string,
+        // other properties of an item
+    }
+    
+    
+
+    interface ItemsByCategory {
+        [key: string]: Item[];
+    }
+    
+    const categories: string[] = [];
+    const items: ItemsByCategory = { all: [] };
+    
+    for (const item of data) {
+        const catg = item.categoryName;
+        if (!categories.includes(catg)) {
+            categories.push(catg);
+            
+            items[catg] = [];
+        }
+
+        // items['all'].push(item);
+        items['all'].push({
+                    _id : item._id as string,
+                    name : item.item.itemName as string,
+                    price : item.item.itemPrice as string,
+                    description : item.item.itemDescription.slice(0,9) as string,
+                    categoryName : item.categoryName,
+                    image : item.item.itemImage as string
+                });
+
+        items[catg].push({
+            _id : item._id as string,
+            name : item.item.itemName as string,
+            price : item.item.itemPrice as string,
+            description : item.item.itemDescription.slice(0,9) as string,
+            categoryName : item.categoryName,
+            image : item.item.itemImage as string
+
+        });
+    }
+
+    console.log(items)
+
+    // return data.map((foodItem : any)=>{
+    //     return {
+    //         _id : foodItem._id,
+    //         name : foodItem.item.itemName,
+    //         price : foodItem.item.itemPrice,
+    //         description : foodItem.item.itemDescription.slice(0,9),
+    //         image : foodItem.item.itemImage
+
+    //     }
+    // })
+    // return await fetch();
+
+    return items;
+
+}
+
+export async function getRestaurantDetails(id:string){
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': process.env.SKELETON_TOKEN,
+    };
+
+    
+    const response =  await axios.get(`${process.env.RESTAURANT_DETAILS}20`,  {headers})
+    // console.log(response)
+    
+    const data = response.data;
+
+   
+
+    return {
+        name : data.restaurantName,
+    }
+}
 
 
+export async function getItemDetails(id : string){
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': process.env.SKELETON_TOKEN,
+    };
+
+    console.log(id);
+    
+    const response =  await axios.get(`${process.env.MENU_ITEMS}/menu/menu-item-details/${id}`,  {headers})
+    // console.log(response)
+    
+    const data = response.data;
+
+   console.log(data)
+
+    return data;
+
+}
 
 
 
