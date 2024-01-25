@@ -1,0 +1,1 @@
+{"version":3,"file":"consumer.router.js","sourceRoot":"","sources":["../../src/routers/consumer.router.ts"],"names":[],"mappings":"AAAA,OAAO,OAAO,MAAM,SAAS,CAAC;AAC9B,OAAO,EAAE,cAAc,EAAE,MAAM,uCAAuC,CAAC;AAEvE,MAAM,MAAM,GAAG,OAAO,CAAC,MAAM,EAAE,CAAC;AAEhC,MAAM,CAAC,IAAI,CAAC,YAAY,EAAE,cAAc,CAAC,CAAC;AAE1C,eAAe,MAAM,CAAC"}
