@@ -1,5 +1,6 @@
-import { createOrder } from '../models/order/query.js';
-import { createScheduleOrder } from '../models/scheduleOrder/query.js';
+import { createOrder } from "../models/order/query.js";
+import { createScheduleOrder } from "../models/scheduleOrder/query.js";
+import { sendToSkeleton } from "../service/order.service.js";
 // import { createOrderQuery } from '../models/order/query.js';
 // export const createOrder = async (req: Request, res: Response) => {
 //   try {
@@ -13,13 +14,14 @@ export const createOrderController = async (req, res) => {
     try {
         const orderData = req.body;
         orderData.userId = req.body.user.id;
-        // await sendToSkeleton(orderData);
         const createdOrder = await createOrder(orderData);
-        res.status(201).json(createdOrder);
+        const forSkeleton = await sendToSkeleton(createdOrder);
+        // res.status(201).json(createdOrder);
+        res.status(201).json(forSkeleton);
     }
     catch (error) {
-        console.error('Error creating order:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Error creating order:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 export const createScheduleOrderController = async (req, res) => {
@@ -31,8 +33,8 @@ export const createScheduleOrderController = async (req, res) => {
         res.status(201).json(createdOrder);
     }
     catch (error) {
-        console.error('Error creating order:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Error creating order:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 //# sourceMappingURL=order.controller.js.map

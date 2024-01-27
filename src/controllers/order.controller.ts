@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import { createOrder } from '../models/order/query.js';
-import { createScheduleOrder } from '../models/scheduleOrder/query.js';
-import { sendToSkeleton } from '../service/order.service.js';
+import { Request, Response } from "express";
+import { createOrder } from "../models/order/query.js";
+import { createScheduleOrder } from "../models/scheduleOrder/query.js";
+import { sendToSkeleton } from "../service/order.service.js";
 // import { createOrderQuery } from '../models/order/query.js';
 
 // export const createOrder = async (req: Request, res: Response) => {
@@ -13,29 +13,35 @@ import { sendToSkeleton } from '../service/order.service.js';
 //   }
 // };
 
-export const createOrderController = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const orderData = req.body;
-    orderData.userId = req.body.user.id
-    // await sendToSkeleton(orderData);
-    const createdOrder = await createOrder(orderData);
-    res.status(201).json(createdOrder);
-  } catch (error) {
-    console.error('Error creating order:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-
-export const createScheduleOrderController = async (req: Request, res: Response): Promise<void> => {
+export const createOrderController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const orderData = req.body;
     orderData.userId = req.body.user.id;
-    console.log(orderData)
+    const createdOrder = await createOrder(orderData);
+    const forSkeleton = await sendToSkeleton(createdOrder);
+    // res.status(201).json(createdOrder);
+    res.status(201).json(forSkeleton);
+  } catch (error) {
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const createScheduleOrderController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const orderData = req.body;
+    orderData.userId = req.body.user.id;
+    console.log(orderData);
     const createdOrder = await createScheduleOrder(orderData);
     res.status(201).json(createdOrder);
   } catch (error) {
-    console.error('Error creating order:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error creating order:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
