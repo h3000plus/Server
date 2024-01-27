@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { createOrder } from '../models/order/query.js';
 import { createScheduleOrder } from '../models/scheduleOrder/query.js';
+import { sendToSkeleton } from '../service/order.service.js';
 // import { createOrderQuery } from '../models/order/query.js';
 
 // export const createOrder = async (req: Request, res: Response) => {
@@ -16,6 +17,7 @@ export const createOrderController = async (req: Request, res: Response): Promis
   try {
     const orderData = req.body;
     orderData.userId = req.body.user.id
+    await sendToSkeleton(orderData);
     const createdOrder = await createOrder(orderData);
     res.status(201).json(createdOrder);
   } catch (error) {

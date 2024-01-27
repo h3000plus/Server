@@ -17,7 +17,6 @@ export const createMenuItemController = async(req: Request, res: Response)=>{
 export const getMenuItemByIdController = async(req: Request, res: Response)=>{
     try {
         const id = req.params.item_id;
-        console.log('itemId',id)
         const oneMenuItem = await getItemDetails(id);
         res.status(200).json(oneMenuItem);
     } catch (error: any) {

@@ -13,7 +13,6 @@ export const createMenuItemController = async (req, res) => {
 export const getMenuItemByIdController = async (req, res) => {
     try {
         const id = req.params.item_id;
-        console.log('itemId', id);
         const oneMenuItem = await getItemDetails(id);
         res.status(200).json(oneMenuItem);
     }

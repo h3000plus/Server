@@ -183,16 +183,41 @@ export async function getItemDetails(id : string){
         'Authorization': process.env.SKELETON_TOKEN,
     };
 
-    console.log(id);
     
-    const response =  await axios.get(`${process.env.MENU_ITEMS}/menu/menu-item-details/${id}`,  {headers})
-    // console.log(response)
     
+    const response =  await axios.get(`${process.env.MENU_ITEMS}menu/menu-item-details/${id}`,  {headers})
+
     const data = response.data;
 
-   console.log(data)
+    // const details: any = data.map( (item: any) => {
+        return {
+            _id: data._id,
+            resId: data.restaurantId,
+            name: data.item.itemName,
+            image: data.item.itemImage,
+            description: data.item.itemDescription,
+            price: data.item.itemPrice,
+            addon: data.item.options.add.map( (ing: any) => {
+                return {
+                    name: ing.ingredientName,
+                    price: ing.costPerUnit,
+                    _id: ing._id
+                }
+            }),
+            no: data.item.options.no.map( (ing: any) => {
+                return {
+                    name: ing.ingredientName,
+                    price: ing.costPerUnit,
+                    _id: ing._id
+                }
+            })
+        }
+    // })
 
-    return data;
+    // console.log(data);
+    
+
+    // return data;
 
 }
 
