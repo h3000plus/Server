@@ -3,8 +3,9 @@ export const sendToSkeleton = async (orderData) => {
     const allMenuItemsWithAdditionalDetails = await getMenuItemsByRestaurant(orderData.cartItems[0].resId);
     const addAdditionalDetails = await addDetailsToRestaurants(orderData, allMenuItemsWithAdditionalDetails);
 };
-const addDetailsToRestaurants = (orderData, allMenuItemsWithAdditionalDetails) => {
-    const itemsWithDetails = orderData.map(() => {
-    });
+const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDetails) => {
+    console.log(orderData);
+    // const itemsWithDetails =  orderData.map(()=>{
+    // })
 };
 //# sourceMappingURL=order.service.js.map

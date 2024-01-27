@@ -6,11 +6,12 @@ export const sendToSkeleton = async (orderData : IOrder) => {
 
 }
 
-const addDetailsToRestaurants = (orderData : IOrder,allMenuItemsWithAdditionalDetails : any) => {
+const addDetailsToRestaurants = async (orderData : IOrder,allMenuItemsWithAdditionalDetails : any) => {
 
-    const itemsWithDetails =  orderData.map(()=>{
+    console.log(orderData);
+    // const itemsWithDetails =  orderData.map(()=>{
 
-    })
+    // })
 
 
 } 

@@ -21,7 +21,7 @@ const protectMiddleware = (
   try {
     const user = verifyToken(token);
     req.body.user = user;
-    console.log(user)
+  
     next();
   } catch (error) {
     console.log(error);

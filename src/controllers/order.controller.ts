@@ -17,7 +17,7 @@ export const createOrderController = async (req: Request, res: Response): Promis
   try {
     const orderData = req.body;
     orderData.userId = req.body.user.id
-    await sendToSkeleton(orderData);
+    // await sendToSkeleton(orderData);
     const createdOrder = await createOrder(orderData);
     res.status(201).json(createdOrder);
   } catch (error) {

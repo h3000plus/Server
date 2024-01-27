@@ -13,7 +13,6 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
             apiUrl += `&cuisine=${cuisine}`;
         }
         // const apiUrl = `${process.env.RESTAURANTS_URL}?mode=${mode}&searchTerm=${searchTerm}&cuisine=${cuisine}`;
-        console.log(apiUrl);
         const response = await axios.get(apiUrl, { headers });
         const data = response.data;
         const restaurants = data.map((res) => {
@@ -32,7 +31,6 @@ export async function getCuisines() {
             'Authorization': process.env.SKELETON_TOKEN,
         };
         let apiUrl = process.env.CUISINES_URL;
-        console.log(apiUrl);
         const response = await axios.get(apiUrl, { headers });
         const data = response.data;
         const cuisines = data.map((cuisine) => {
@@ -78,7 +76,6 @@ export async function getMenuItemsByRestaurant(id) {
             image: item.item.itemImage
         });
     }
-    console.log(items);
     // return data.map((foodItem : any)=>{
     //     return {
     //         _id : foodItem._id,

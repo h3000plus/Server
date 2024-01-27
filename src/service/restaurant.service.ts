@@ -17,7 +17,7 @@ export async function getFilteredRestaurants(mode: string , searchTerm: string, 
             apiUrl += `&cuisine=${cuisine}`
         }
         // const apiUrl = `${process.env.RESTAURANTS_URL}?mode=${mode}&searchTerm=${searchTerm}&cuisine=${cuisine}`;
-        console.log(apiUrl)
+    
         const response: AxiosResponse = await axios.get(apiUrl, {headers});
         const data = response.data;
 
@@ -42,7 +42,7 @@ export async function getCuisines() {
 
         let apiUrl = process.env.CUISINES_URL as string;
 
-        console.log(apiUrl)
+
         const response: AxiosResponse = await axios.get(apiUrl,  {headers});
         const data = response.data;
 
@@ -137,7 +137,6 @@ export async function getMenuItemsByRestaurant(id : string){
         });
     }
 
-    console.log(items)
 
     // return data.map((foodItem : any)=>{
     //     return {
