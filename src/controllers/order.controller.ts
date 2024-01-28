@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { createOrder } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
-import { sendToSkeleton } from "../service/order.service.js";
+import {
+  prepareForSkeleton,
+  sendToSkeleton,
+} from "../service/order.service.js";
 // import { createOrderQuery } from '../models/order/query.js';
 
 // export const createOrder = async (req: Request, res: Response) => {
@@ -21,9 +24,10 @@ export const createOrderController = async (
     const orderData = req.body;
     orderData.userId = req.body.user.id;
     const createdOrder = await createOrder(orderData);
-    const forSkeleton = await sendToSkeleton(createdOrder);
+    const detailedOrder = await prepareForSkeleton(createdOrder);
+    const skeletonResponse = await sendToSkeleton(detailedOrder);
     // res.status(201).json(createdOrder);
-    res.status(201).json(forSkeleton);
+    res.status(201).json(skeletonResponse);
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ error: "Internal Server Error" });

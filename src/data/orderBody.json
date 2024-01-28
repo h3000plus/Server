@@ -1,0 +1,108 @@
+{
+  "_id": "65b6860e07a0bced9b1a047a",
+  "restaurantId": 1,
+  "type": "delivery",
+  "bill": 206,
+  "unit": "USD",
+  "status": "pending",
+  "vipCustomer": false,
+  "items": [
+    {
+      "_id": "65b2435833d9c0a610c4cb54",
+      "restaurantId": 1,
+      "categoryId": "65a8fd9501fd660bbcae33ad",
+      "categoryName": "Pasta",
+      "mealTimeId": 1,
+      "item": {
+        "_id": "65b2435833d9c0a610c4cb55",
+        "itemId": 72,
+        "itemName": "Alfredo ",
+        "itemImage": "http://res.cloudinary.com/dkfnaltqp/image/upload/v1706181201/dkfnaltqp_1706181204044_alfredo.jpg",
+        "itemDescription": "pasta tossed with butter, and Parmesan cheese to form a rich creamy sauce with broccoli, carrot, and mushrooms.",
+        "itemQuantity": 1,
+        "itemPreparationTime": 20,
+        "itemPackingType": [],
+        "itemLastingTime": 180,
+        "itemPortionSize": "Medium",
+        "ingredients": {
+          "rawIngredients": [
+            {
+              "id": 111,
+              "ingredientName": "Cheese",
+              "unitOfStock": "gm",
+              "quantity": 4,
+              "costPerUnit": 200,
+              "caloriesPerUnit": 150,
+              "_id": "65b2435833d9c0a610c4cb56"
+            },
+            {
+              "id": 5,
+              "ingredientName": "Milk",
+              "unitOfStock": "ml",
+              "quantity": 4,
+              "costPerUnit": 0.20000000000000004,
+              "caloriesPerUnit": 100,
+              "_id": "65b2435833d9c0a610c4cb57"
+            },
+            {
+              "id": 2222,
+              "ingredientName": "Cheese Cream",
+              "unitOfStock": "gm",
+              "quantity": 3,
+              "costPerUnit": 300,
+              "caloriesPerUnit": 250,
+              "_id": "65b2435833d9c0a610c4cb58"
+            }
+          ],
+          "recipes": []
+        },
+        "options": {
+          "add": [
+            {
+              "id": 111,
+              "ingredientName": "Cheese",
+              "unitOfStock": "gm",
+              "quantity": 4,
+              "costPerUnit": 200,
+              "caloriesPerUnit": 150,
+              "price": 0,
+              "_id": "65b2435833d9c0a610c4cb59"
+            }
+          ],
+          "no": [
+            {
+              "id": 111,
+              "ingredientName": "Cheese",
+              "unitOfStock": "gm",
+              "quantity": 4,
+              "costPerUnit": 200,
+              "caloriesPerUnit": 150,
+              "price": 0,
+              "_id": "65b2435833d9c0a610c4cb5a"
+            }
+          ]
+        },
+        "chosenOptions": {
+          "add": [
+            {
+              "ingredientName": "Cheese",
+              "_id": "65b2435833d9c0a610c4cb59",
+              "quantity": 1
+            }
+          ],
+          "no": [],
+          "_id": "65b5044ebb8664a60a98dce2"
+        },
+        "optionalNotes": "No salt please",
+        "itemPrice": 6,
+        "itemCalories": 1000,
+        "timeOfDay": ["All Day", "BreakFast", "Lunch"],
+        "itemProfileTastyTags": ["Sweet", "Bitter", "Rich"],
+        "typeOfFoods": ["All"],
+        "servingTemperature": 25,
+        "itemDietaryRestrictions": ["Milk", "Corn"]
+      }
+    }
+  ],
+  "createdAt": ""
+}

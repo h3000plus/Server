@@ -3,8 +3,8 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
     try {
         let apiUrl = `${process.env.RESTAURANTS_URL}?mode=${mode}`;
         const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': process.env.SKELETON_TOKEN,
+            "Content-Type": "application/json",
+            Authorization: process.env.SKELETON_TOKEN,
         };
         if (searchTerm) {
             apiUrl += `&searchTerm=${searchTerm}`;
@@ -16,7 +16,11 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
         const response = await axios.get(apiUrl, { headers });
         const data = response.data;
         const restaurants = data.map((res) => {
-            return { resId: res.restaurantId, resName: res.restaurantName, resImage: res.restaurantLogo };
+            return {
+                resId: res.restaurantId,
+                resName: res.restaurantName,
+                resImage: res.restaurantLogo,
+            };
         });
         return restaurants;
     }
@@ -27,8 +31,8 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
 export async function getCuisines() {
     try {
         const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': process.env.SKELETON_TOKEN,
+            "Content-Type": "application/json",
+            Authorization: process.env.SKELETON_TOKEN,
         };
         let apiUrl = process.env.CUISINES_URL;
         const response = await axios.get(apiUrl, { headers });
@@ -44,11 +48,13 @@ export async function getCuisines() {
 }
 export async function getMenuItemsByRestaurant(id) {
     const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': process.env.SKELETON_TOKEN,
+        "Content-Type": "application/json",
+        Authorization: process.env.SKELETON_TOKEN,
     };
     // console.log(`${process.env.MENU_ITEMS}/menu/one-restaurant-menu/${id}`)
-    const response = await axios.get(`${process.env.MENU_ITEMS}menu/one-restaurant-menu/${id}`, { headers });
+    const response = await axios.get(`${process.env.MENU_ITEMS}${id}`, {
+        headers,
+    });
     const data = response.data;
     const categories = [];
     const items = { all: [] };
@@ -59,13 +65,13 @@ export async function getMenuItemsByRestaurant(id) {
             items[catg] = [];
         }
         // items['all'].push(item);
-        items['all'].push({
+        items["all"].push({
             _id: item._id,
             name: item.item.itemName,
             price: item.item.itemPrice,
             description: item.item.itemDescription.slice(0, 9),
             categoryName: item.categoryName,
-            image: item.item.itemImage
+            image: item.item.itemImage,
         });
         items[catg].push({
             _id: item._id,
@@ -73,27 +79,19 @@ export async function getMenuItemsByRestaurant(id) {
             price: item.item.itemPrice,
             description: item.item.itemDescription.slice(0, 9),
             categoryName: item.categoryName,
-            image: item.item.itemImage
+            image: item.item.itemImage,
         });
     }
-    // return data.map((foodItem : any)=>{
-    //     return {
-    //         _id : foodItem._id,
-    //         name : foodItem.item.itemName,
-    //         price : foodItem.item.itemPrice,
-    //         description : foodItem.item.itemDescription.slice(0,9),
-    //         image : foodItem.item.itemImage
-    //     }
-    // })
-    // return await fetch();
     return items;
 }
 export async function getRestaurantDetails(id) {
     const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': process.env.SKELETON_TOKEN,
+        "Content-Type": "application/json",
+        Authorization: process.env.SKELETON_TOKEN,
     };
-    const response = await axios.get(`${process.env.RESTAURANT_DETAILS}20`, { headers });
+    const response = await axios.get(`${process.env.RESTAURANT_DETAILS}${id}`, {
+        headers,
+    });
     // console.log(response)
     const data = response.data;
     return {
@@ -102,10 +100,12 @@ export async function getRestaurantDetails(id) {
 }
 export async function getItemDetails(id) {
     const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': process.env.SKELETON_TOKEN,
+        "Content-Type": "application/json",
+        Authorization: process.env.SKELETON_TOKEN,
     };
-    const response = await axios.get(`${process.env.MENU_ITEMS}menu/menu-item-details/${id}`, { headers });
+    const response = await axios.get(`${process.env.SINGLE_MENU_ITEM}${id}`, {
+        headers,
+    });
     const data = response.data;
     // const details: any = data.map( (item: any) => {
     return {
@@ -119,16 +119,16 @@ export async function getItemDetails(id) {
             return {
                 name: ing.ingredientName,
                 price: ing.costPerUnit,
-                _id: ing._id
+                _id: ing._id,
             };
         }),
         no: data.item.options.no.map((ing) => {
             return {
                 name: ing.ingredientName,
                 price: ing.costPerUnit,
-                _id: ing._id
+                _id: ing._id,
             };
-        })
+        }),
     };
     // })
     // console.log(data);

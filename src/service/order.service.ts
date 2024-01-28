@@ -1,7 +1,8 @@
 import axios from "axios";
 import { IOrder } from "../interfaces/order.interface.js";
+import { IOrderToSend } from "../interfaces/orderToSend.interface.js";
 
-export const sendToSkeleton = async (orderData: IOrder) => {
+export const prepareForSkeleton = async (orderData: IOrder) => {
   //   const allMenuItemsWithAdditionalDetails = await getMenuItemsByRestaurant(
   //     orderData.cartItems[0].resId
   //   );
@@ -10,7 +11,7 @@ export const sendToSkeleton = async (orderData: IOrder) => {
     Authorization: process.env.SKELETON_TOKEN,
   };
   const response = await axios.get(
-    `${process.env.MENU_ITEMS}menu/one-restaurant-menu/${orderData.cartItems[0].resId}`,
+    `${process.env.MENU_ITEMS}${orderData.cartItems[0].resId}`,
     { headers }
   );
   const allMenuItemsWithAdditionalDetails = response.data;
@@ -20,10 +21,8 @@ export const sendToSkeleton = async (orderData: IOrder) => {
     allMenuItemsWithAdditionalDetails
   );
   return {
-    _id: {
-      $oid: orderData._id,
-    },
-    restaurantId: orderData.cartItems[0].resId,
+    _id: orderData._id,
+    restaurantId: parseInt(orderData.cartItems[0].resId),
     ...addAdditionalDetails,
   };
 };
@@ -56,7 +55,7 @@ const addDetailsToRestaurants = async (
 
     return {
       _id: cartItem._id,
-      restaurantId: cartItem.resId,
+      restaurantId: parseInt(cartItem.resId),
       categoryId: menuItem.categoryId,
       categoryName: menuItem.categoryName,
       mealTimeId: menuItem.mealTimeId,
@@ -76,9 +75,7 @@ const addDetailsToRestaurants = async (
         chosenOptions: {
           add: addons,
           no: no,
-          _id: {
-            $oid: "65b5044ebb8664a60a98dce2",
-          },
+          _id: "65b5044ebb8664a60a98dce2",
         },
         optionalNotes: "No salt please",
         itemPrice: menuItem.item.itemPrice,
@@ -95,11 +92,22 @@ const addDetailsToRestaurants = async (
 
   return {
     type: orderData.delivery ? "delivery" : "pickup",
-    waiterId: "",
     bill: orderData.subtotal,
     unit: "USD",
     status: "pending",
-    vipCustomer: "false",
+    vipCustomer: false,
     items: itemsWithDetails,
+    createdAt: "",
   };
+};
+
+export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
+  console.log(JSON.stringify(preparedOrder));
+  const res = await axios.post<any>(
+    process.env.CREATE_ORDER as string,
+    { order: preparedOrder },
+    { headers: { Authorization: process.env.SKELETON_TOKEN } }
+  );
+
+  return res.data;
 };
