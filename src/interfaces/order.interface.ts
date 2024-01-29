@@ -11,6 +11,7 @@ export interface IOrder {
   ordertype: string;
   delivery: boolean;
   pickup: boolean;
+  createdAt: Date
 }
 
 export interface ICart {

@@ -18,12 +18,27 @@ export const createOrder = async (orderData) => {
         throw new Error('Internal Server Error');
     }
 };
-// export const getNextSequenceValue = async function (sequenceName: any) {
-//   const sequenceDoc = await CounterOrderModel.findOneAndUpdate(
-//     { _id: sequenceName },
-//     { $inc: { sequence_value: 1 } },
-//     { new: true, upsert: true }
-//   );
-//   return sequenceDoc.sequence_value;
-// };
+// getting all orders by user id
+export const getAllCompletedOrdersByUserId = async (userId) => {
+    try {
+        // Assuming your OrderModel has a field named 'userId' to store the user ID
+        const orders = await orderModel.find({ userId, orderStatus: 'completed' }).exec();
+        return orders;
+    }
+    catch (error) {
+        console.error('Error retrieving orders:', error);
+        throw new Error('Internal Server Error');
+    }
+};
+export const getAllProcessingOrdersByUserId = async (userId) => {
+    try {
+        // Assuming your OrderModel has a field named 'userId' to store the user ID
+        const orders = await orderModel.find({ userId, orderStatus: { $ne: "completed" } }).exec();
+        return orders;
+    }
+    catch (error) {
+        console.error('Error retrieving orders:', error);
+        throw new Error('Internal Server Error');
+    }
+};
 //# sourceMappingURL=query.js.map

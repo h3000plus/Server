@@ -24,7 +24,8 @@ const orderSchema = new Schema({
     orderStatus: { type: String, default: "pending" },
     ordertype: { type: String, required: true },
     delivery: { type: Boolean, required: true },
-    pickup: { type: Boolean, required: true }
+    pickup: { type: Boolean, required: true },
+    createdAt: { type: Date, required: true }
 });
 const orderModel = mongoose.model('orders', orderSchema);
 export default orderModel;

@@ -29,7 +29,8 @@ const orderSchema = new Schema<IOrder>({
     orderStatus: { type: String, default: "pending" },
     ordertype: { type: String, required: true },
     delivery: { type: Boolean, required: true },
-    pickup: { type: Boolean, required: true }
+    pickup: { type: Boolean, required: true },
+    createdAt: {type: Date, required: true}
 })
 
 
