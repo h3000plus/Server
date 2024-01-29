@@ -1,6 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-import { verifyToken } from '../utilities/auth.js';
-
+import { NextFunction, Request, Response } from "express";
+import { verifyToken } from "../utilities/auth.js";
 
 export interface AuthRequest extends Request {
   user?: string | object;
@@ -9,24 +8,25 @@ export interface AuthRequest extends Request {
 const protectMiddleware = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   const token = req.headers.token as string;
 
   if (!token) {
     res.status(401);
-    res.json({ message: 'You are not authorized' });
+    res.json({ message: "You are not authorized" });
     return;
   }
   try {
     const user = verifyToken(token);
+    if (!user) throw Error("user doesnt exist");
     req.body.user = user;
-  
+
     next();
   } catch (error) {
     console.log(error);
     res.status(401);
-    res.json({ message: 'You are not authorized' });
+    res.json({ message: error });
     return;
   }
 };
