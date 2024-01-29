@@ -101,7 +101,7 @@ export async function getMenuItemsByRestaurant(id: string) {
       _id: item._id as string,
       name: item.item.itemName as string,
       price: item.item.itemPrice as string,
-      description: item.item.itemDescription.slice(0, 9) as string,
+      description: item.item.itemDescription?.slice(0, 9) as string,
       categoryName: item.categoryName,
       image: item.item.itemImage as string,
     });
@@ -110,7 +110,7 @@ export async function getMenuItemsByRestaurant(id: string) {
       _id: item._id as string,
       name: item.item.itemName as string,
       price: item.item.itemPrice as string,
-      description: item.item.itemDescription.slice(0, 9) as string,
+      description: item.item.itemDescription?.slice(0, 9) as string,
       categoryName: item.categoryName,
       image: item.item.itemImage as string,
     });

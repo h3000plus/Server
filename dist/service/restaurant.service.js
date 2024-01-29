@@ -69,7 +69,7 @@ export async function getMenuItemsByRestaurant(id) {
             _id: item._id,
             name: item.item.itemName,
             price: item.item.itemPrice,
-            description: item.item.itemDescription.slice(0, 9),
+            description: item.item.itemDescription?.slice(0, 9),
             categoryName: item.categoryName,
             image: item.item.itemImage,
         });
@@ -77,7 +77,7 @@ export async function getMenuItemsByRestaurant(id) {
             _id: item._id,
             name: item.item.itemName,
             price: item.item.itemPrice,
-            description: item.item.itemDescription.slice(0, 9),
+            description: item.item.itemDescription?.slice(0, 9),
             categoryName: item.categoryName,
             image: item.item.itemImage,
         });
