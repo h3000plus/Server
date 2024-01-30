@@ -14,8 +14,9 @@ import orderModel from './model.js';
 
 export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
   try {
+    
     const createdOrder = await orderModel.create(orderData);
-
+    
     return createdOrder;
   } catch (error) {
     console.error('Error creating order:', error);

@@ -7,7 +7,7 @@ const ICartSchema = new Schema({
     _id: { type: String, required: true },
     resId: { type: String, required: true },
     cartId: { type: String, required: true },
-    name: { type: String, required: true },
+    name: { type: String, required: false },
     image: { type: String, required: true },
     description: { type: String, required: true },
     quantity: { type: Number, required: true },

@@ -23,8 +23,11 @@ export const createOrderController = async (
   try {
     const orderData = req.body;
     orderData.userId = req.body.user.id;
+    
     const createdOrder = await createOrder(orderData);
+    
     const detailedOrder = await prepareForSkeleton(createdOrder);
+    
     const skeletonResponse = await sendToSkeleton(detailedOrder);
     // res.status(201).json(createdOrder);
     res.status(201).json(skeletonResponse);
