@@ -14,9 +14,7 @@ import orderModel from './model.js';
 
 export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
   try {
-    
     const createdOrder = await orderModel.create(orderData);
-    
     return createdOrder;
   } catch (error) {
     console.error('Error creating order:', error);
@@ -24,7 +22,17 @@ export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
   }
 };
 
-// getting all orders by user id
+// getting order details by order id
+export const getOrderDetails = async (orderId: string): Promise<IOrder | null> => {
+  try {
+    const foundOrder = await orderModel.findById(orderId);
+    return foundOrder;
+  } catch (error) {
+    throw new Error('Internal Server Error');
+  }
+};
+
+// getting all completed orders by user id
 export const getAllCompletedOrdersByUserId = async (userId: string): Promise<IOrder[]> => {
   try {
     // Assuming your OrderModel has a field named 'userId' to store the user ID
@@ -36,6 +44,7 @@ export const getAllCompletedOrdersByUserId = async (userId: string): Promise<IOr
   }
 };
 
+// getting all processing orders by user id
 export const getAllProcessingOrdersByUserId = async (userId: string): Promise<IOrder[]> => {
   try {
     // Assuming your OrderModel has a field named 'userId' to store the user ID
