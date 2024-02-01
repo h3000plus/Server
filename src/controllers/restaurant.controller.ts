@@ -6,6 +6,9 @@ import {
   getRestaurantById,
   getAllRestaurantsByCuisine,
 } from "../models/restaurant/query.js";
+
+import fs from "fs";
+
 import {
   getCuisines,
   getFilteredRestaurants,
@@ -123,6 +126,22 @@ export const getAllRestaurantsByCuisineController = async (
     } else {
       res.status(404).json({ error: "Restaurant not found" });
     }
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const createMenuItems = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    fs.readFile(__dirname + "../data/menu.json", (err, data) => {
+      console.log(data);
+      // data = JSON.parse(data);
+    });
   } catch (error) {
     res.status(500).json({
       message: "Internal Server Error",

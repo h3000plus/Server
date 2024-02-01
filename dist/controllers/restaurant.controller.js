@@ -1,4 +1,5 @@
 import { getAllDeliveryRestaurant, createRestaurant, searchAllDeliveryRestaurant, getAllRestaurantsByCuisine, } from "../models/restaurant/query.js";
+import fs from "fs";
 import { getCuisines, getFilteredRestaurants, getRestaurantDetails, } from "../service/restaurant.service.js";
 export const getAllDeliveryRestaurantController = async (req, res) => {
     try {
@@ -88,6 +89,19 @@ export const getAllRestaurantsByCuisineController = async (req, res) => {
         else {
             res.status(404).json({ error: "Restaurant not found" });
         }
+    }
+    catch (error) {
+        res.status(500).json({
+            message: "Internal Server Error",
+        });
+    }
+};
+export const createMenuItems = async (req, res) => {
+    try {
+        fs.readFile(__dirname + "../data/menu.json", (err, data) => {
+            console.log(data);
+            // data = JSON.parse(data);
+        });
     }
     catch (error) {
         res.status(500).json({
