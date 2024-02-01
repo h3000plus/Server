@@ -9,7 +9,7 @@ export const prepareForSkeleton = async (orderData) => {
     };
     const response = await axios.get(`${process.env.MENU_ITEMS}${orderData.cartItems[0].resId}`, { headers });
     const allMenuItemsWithAdditionalDetails = response.data;
-    //   console.log(allMenuItemsWithAdditionalDetails);
+    // console.log(allMenuItemsWithAdditionalDetails);
     const addAdditionalDetails = await addDetailsToRestaurants(orderData, allMenuItemsWithAdditionalDetails);
     return {
         _id: orderData._id,
@@ -18,7 +18,6 @@ export const prepareForSkeleton = async (orderData) => {
     };
 };
 const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDetails) => {
-    //   console.log(orderData);
     const itemsWithDetails = orderData.cartItems.map((cartItem) => {
         const menuItem = allMenuItemsWithAdditionalDetails.filter((item) => {
             return item._id === cartItem._id;

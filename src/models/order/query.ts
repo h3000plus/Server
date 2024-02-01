@@ -15,7 +15,6 @@ import orderModel from './model.js';
 export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
   try {
     const createdOrder = await orderModel.create(orderData);
-
     return createdOrder;
   } catch (error) {
     console.error('Error creating order:', error);
@@ -23,11 +22,36 @@ export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
   }
 };
 
-// export const getNextSequenceValue = async function (sequenceName: any) {
-//   const sequenceDoc = await CounterOrderModel.findOneAndUpdate(
-//     { _id: sequenceName },
-//     { $inc: { sequence_value: 1 } },
-//     { new: true, upsert: true }
-//   );
-//   return sequenceDoc.sequence_value;
-// };
+// getting order details by order id
+export const getOrderDetails = async (orderId: string): Promise<IOrder | null> => {
+  try {
+    const foundOrder = await orderModel.findById(orderId);
+    return foundOrder;
+  } catch (error) {
+    throw new Error('Internal Server Error');
+  }
+};
+
+// getting all completed orders by user id
+export const getAllCompletedOrdersByUserId = async (userId: string): Promise<IOrder[]> => {
+  try {
+    // Assuming your OrderModel has a field named 'userId' to store the user ID
+    const orders = await orderModel.find({ userId , orderStatus : 'completed'}).exec();
+    return orders;
+  } catch (error) {
+    console.error('Error retrieving orders:', error);
+    throw new Error('Internal Server Error');
+  }
+};
+
+// getting all processing orders by user id
+export const getAllProcessingOrdersByUserId = async (userId: string): Promise<IOrder[]> => {
+  try {
+    // Assuming your OrderModel has a field named 'userId' to store the user ID
+    const orders = await orderModel.find({ userId , orderStatus : {$ne:"completed"}}).exec();
+    return orders;
+  } catch (error) {
+    console.error('Error retrieving orders:', error);
+    throw new Error('Internal Server Error');
+  }
+};
