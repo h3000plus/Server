@@ -14,14 +14,14 @@ export const prepareForSkeleton = async (orderData: IOrder) => {
     `${process.env.MENU_ITEMS}${orderData.cartItems[0].resId}`,
     { headers }
   );
-  
+
   const allMenuItemsWithAdditionalDetails = response.data;
-    // console.log(allMenuItemsWithAdditionalDetails);
+  // console.log(allMenuItemsWithAdditionalDetails);
   const addAdditionalDetails = await addDetailsToRestaurants(
     orderData,
     allMenuItemsWithAdditionalDetails
   );
-  
+
   return {
     _id: orderData._id,
     restaurantId: parseInt(orderData.cartItems[0].resId),
@@ -33,13 +33,11 @@ const addDetailsToRestaurants = async (
   orderData: IOrder,
   allMenuItemsWithAdditionalDetails: any
 ) => {
-  
   const itemsWithDetails = orderData.cartItems.map((cartItem) => {
     const menuItem = allMenuItemsWithAdditionalDetails.filter((item: any) => {
-      
       return item._id === cartItem._id;
     })[0];
-    
+
     const addons = cartItem.addon?.map((item) => {
       return {
         ingredientName: item.name,
@@ -105,7 +103,6 @@ const addDetailsToRestaurants = async (
 };
 
 export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
-  console.log(JSON.stringify(preparedOrder));
   const res = await axios.post<any>(
     process.env.CREATE_ORDER as string,
     { order: preparedOrder },

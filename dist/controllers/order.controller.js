@@ -1,4 +1,4 @@
-import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails } from "../models/order/query.js";
+import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import { prepareForSkeleton, sendToSkeleton, } from "../service/order.service.js";
 // import { createOrderQuery } from '../models/order/query.js';
@@ -44,15 +44,15 @@ export const getAllCompletedOrders = async (req, res) => {
         const userId = req.body.user.id;
         // req.headers[user-id]
         if (!userId) {
-            res.status(400).json({ error: 'User ID is required.' });
+            res.status(400).json({ error: "User ID is required." });
             return;
         }
         const orders = await getAllCompletedOrdersByUserId(userId);
         res.json(orders);
     }
     catch (error) {
-        console.error('Controller Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Controller Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 export const getAllProcessingOrders = async (req, res) => {
@@ -61,15 +61,15 @@ export const getAllProcessingOrders = async (req, res) => {
         const userId = req.body.user.id;
         // req.headers[user-id]
         if (!userId) {
-            res.status(400).json({ error: 'User ID is required.' });
+            res.status(400).json({ error: "User ID is required." });
             return;
         }
         const orders = await getAllProcessingOrdersByUserId(userId);
         res.json(orders);
     }
     catch (error) {
-        console.error('Controller Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Controller Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 export const getOrderByIdController = async (req, res) => {
@@ -77,14 +77,28 @@ export const getOrderByIdController = async (req, res) => {
     try {
         const orderDetails = await getOrderDetails(orderId);
         if (!orderDetails) {
-            res.status(404).json({ error: 'Order not found' });
+            res.status(404).json({ error: "Order not found" });
             return;
         }
         res.status(200).json(orderDetails);
     }
     catch (error) {
-        console.error('Error in getOrderByIdController:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Error in getOrderByIdController:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+export const changeOrderStatus = async (req, res) => {
+    console.log("s");
+    const { orderId, status } = req.body;
+    const changedOrder = await updateStatus(orderId, status);
+    res.json({
+        changedOrder,
+    });
+    try {
+    }
+    catch (error) {
+        console.error("Error in change Order Status:", error);
+        res.status(500).json({ error: error });
     }
 };
 //# sourceMappingURL=order.controller.js.map
