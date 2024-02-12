@@ -5,6 +5,7 @@ import {
   getAllProcessingOrdersByUserId,
   getOrderDetails,
   updateStatus,
+  findAllProcessingOrdersByRestaurantId,
 } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import {
@@ -25,8 +26,9 @@ export const createOrderController = async (
     const detailedOrder = await prepareForSkeleton(createdOrder);
 
     const skeletonResponse = await sendToSkeleton(detailedOrder);
+
+    res.status(201).json("order Posted");
     // res.status(201).json(createdOrder);
-    res.status(201).json(skeletonResponse);
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -40,7 +42,7 @@ export const createScheduleOrderController = async (
   try {
     const orderData = req.body;
     orderData.userId = req.body.user.id;
-    console.log(orderData);
+
     const createdOrder = await createScheduleOrder(orderData);
     res.status(201).json(createdOrder);
   } catch (error) {
@@ -122,14 +124,31 @@ export const changeOrderStatus = async (
 ): Promise<void> => {
   const { orderId, status } = req.body;
 
-  const changedOrder = await updateStatus(orderId, status);
-
-  res.json({
-    changedOrder,
-  });
   try {
+    const changedOrder = await updateStatus(orderId, status);
+
+    res.json({
+      changedOrder,
+    });
   } catch (error) {
     console.error("Error in change Order Status:", error);
+    res.status(500).json({ error: error });
+  }
+};
+
+export const getAllProcessingOrdersByRestaurantId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { restaurantId } = req.params;
+
+  try {
+    const orders = await findAllProcessingOrdersByRestaurantId(restaurantId);
+    res.json({
+      orders,
+    });
+  } catch (error) {
+    console.error("Error fetching processing orders:", error);
     res.status(500).json({ error: error });
   }
 };

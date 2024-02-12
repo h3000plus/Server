@@ -37,8 +37,11 @@ const addDetailsToRestaurants = async (
     const menuItem = allMenuItemsWithAdditionalDetails.filter((item: any) => {
       return item._id === cartItem._id;
     })[0];
-
     const addons = cartItem.addon?.map((item) => {
+      // const addon = allMenuItemsWithAdditionalDetails.filter((item: any) => {
+      //   return item._id === cartItem._id;
+      // })[0];
+
       return {
         ingredientName: item.name,
         _id: item._id,

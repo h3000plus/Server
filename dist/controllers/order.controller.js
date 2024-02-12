@@ -1,15 +1,6 @@
-import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, } from "../models/order/query.js";
+import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import { prepareForSkeleton, sendToSkeleton, } from "../service/order.service.js";
-// import { createOrderQuery } from '../models/order/query.js';
-// export const createOrder = async (req: Request, res: Response) => {
-//   try {
-//     const order = await createOrderQuery(req.body);
-//     res.status(201).json(order);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
 export const createOrderController = async (req, res) => {
     try {
         const orderData = req.body;
@@ -17,8 +8,8 @@ export const createOrderController = async (req, res) => {
         const createdOrder = await createOrder(orderData);
         const detailedOrder = await prepareForSkeleton(createdOrder);
         const skeletonResponse = await sendToSkeleton(detailedOrder);
+        res.status(201).json("order Posted");
         // res.status(201).json(createdOrder);
-        res.status(201).json(skeletonResponse);
     }
     catch (error) {
         console.error("Error creating order:", error);
@@ -29,7 +20,6 @@ export const createScheduleOrderController = async (req, res) => {
     try {
         const orderData = req.body;
         orderData.userId = req.body.user.id;
-        console.log(orderData);
         const createdOrder = await createScheduleOrder(orderData);
         res.status(201).json(createdOrder);
     }
@@ -88,16 +78,28 @@ export const getOrderByIdController = async (req, res) => {
     }
 };
 export const changeOrderStatus = async (req, res) => {
-    console.log("s");
     const { orderId, status } = req.body;
-    const changedOrder = await updateStatus(orderId, status);
-    res.json({
-        changedOrder,
-    });
     try {
+        const changedOrder = await updateStatus(orderId, status);
+        res.json({
+            changedOrder,
+        });
     }
     catch (error) {
         console.error("Error in change Order Status:", error);
+        res.status(500).json({ error: error });
+    }
+};
+export const getAllProcessingOrdersByRestaurantId = async (req, res) => {
+    const { restaurantId } = req.params;
+    try {
+        const orders = await findAllProcessingOrdersByRestaurantId(restaurantId);
+        res.json({
+            orders,
+        });
+    }
+    catch (error) {
+        console.error("Error fetching processing orders:", error);
         res.status(500).json({ error: error });
     }
 };

@@ -6,6 +6,7 @@ import {
   getAllProcessingOrders,
   getOrderByIdController,
   changeOrderStatus,
+  getAllProcessingOrdersByRestaurantId,
 } from "../controllers/order.controller.js";
 import protectMiddleware from "../middlewares/protect.middleware.js";
 
@@ -15,6 +16,10 @@ const router = express.Router();
 router.post("/order", protectMiddleware, createOrderController);
 router.get("/orders/completed", protectMiddleware, getAllCompletedOrders);
 router.get("/orders/processing", protectMiddleware, getAllProcessingOrders);
+router.get(
+  "/orders/processing/:restaurantId",
+  getAllProcessingOrdersByRestaurantId
+);
 router.get("/order-status/:order-id");
 router.get("/order-details/:orderId", getOrderByIdController);
 router.post("/change-order-status", changeOrderStatus);

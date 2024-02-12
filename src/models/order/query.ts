@@ -14,6 +14,7 @@ import orderModel from "./model.js";
 
 export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
   try {
+    orderData.restaurantId = orderData.cartItems[0].resId;
     const createdOrder = await orderModel.create(orderData);
     return createdOrder;
   } catch (error) {
@@ -80,6 +81,20 @@ export const updateStatus = async (_id: string, orderStatus: string) => {
       }
     );
     return newOrder;
+  } catch (error) {
+    console.error("Error retrieving orders:", error);
+    throw new Error("Internal Server Error");
+  }
+};
+
+export const findAllProcessingOrdersByRestaurantId = async (
+  restaurandId: string
+): Promise<IOrder[]> => {
+  try {
+    const orders = await orderModel
+      .find({ restaurantId: restaurandId, orderStatus: { $ne: "completed" } })
+      .exec();
+    return orders;
   } catch (error) {
     console.error("Error retrieving orders:", error);
     throw new Error("Internal Server Error");

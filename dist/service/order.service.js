@@ -23,6 +23,9 @@ const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDeta
             return item._id === cartItem._id;
         })[0];
         const addons = cartItem.addon?.map((item) => {
+            // const addon = allMenuItemsWithAdditionalDetails.filter((item: any) => {
+            //   return item._id === cartItem._id;
+            // })[0];
             return {
                 ingredientName: item.name,
                 _id: item._id,
@@ -83,7 +86,6 @@ const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDeta
     };
 };
 export const sendToSkeleton = async (preparedOrder) => {
-    console.log(JSON.stringify(preparedOrder));
     const res = await axios.post(process.env.CREATE_ORDER, { order: preparedOrder }, { headers: { Authorization: process.env.SKELETON_TOKEN } });
     return res.data;
 };
