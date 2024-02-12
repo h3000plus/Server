@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 const IngredientSchema = new Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
+    id: { type: Number, required: true },
 });
 const ICartSchema = new Schema({
     _id: { type: String, required: true },

@@ -32,6 +32,7 @@ export interface IIngredient {
   name: string;
   price: number;
   _id?: ObjectId;
+  id?: number;
 }
 
 export interface IScheduleOrder {

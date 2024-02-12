@@ -37,24 +37,19 @@ const addDetailsToRestaurants = async (
     const menuItem = allMenuItemsWithAdditionalDetails.filter((item: any) => {
       return item._id === cartItem._id;
     })[0];
-    const addons = cartItem.addon?.map((item) => {
-      // const addon = allMenuItemsWithAdditionalDetails.filter((item: any) => {
-      //   return item._id === cartItem._id;
-      // })[0];
 
-      return {
-        ingredientName: item.name,
-        _id: item._id,
-        quantity: cartItem.quantity,
-      };
+    const addons = cartItem.addon?.map((item) => {
+      const addon = menuItem.item.options.add.filter((ing: any) => {
+        return item._id == ing._id;
+      })[0];
+      return addon;
     });
 
     const no = cartItem.no?.map((item) => {
-      return {
-        ingredientName: item.name,
-        _id: item._id,
-        quantity: cartItem.quantity,
-      };
+      const no = menuItem.item.options.no.filter((ing: any) => {
+        return item._id == ing._id;
+      })[0];
+      return no;
     });
 
     return {

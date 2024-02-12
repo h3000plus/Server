@@ -119,6 +119,7 @@ export async function getItemDetails(id) {
             return {
                 name: ing.ingredientName,
                 price: ing.costPerUnit,
+                id: ing.id,
                 _id: ing._id,
             };
         }),
@@ -126,6 +127,7 @@ export async function getItemDetails(id) {
             return {
                 name: ing.ingredientName,
                 price: ing.costPerUnit,
+                id: ing.id,
                 _id: ing._id,
             };
         }),
