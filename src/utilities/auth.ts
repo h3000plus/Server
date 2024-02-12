@@ -1,11 +1,11 @@
-import bcrypt from 'bcrypt';
-import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
+import bcrypt from "bcrypt";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 
 const comparePassword = async (
   password: string,
-  hash: string,
+  hash: string
 ): Promise<boolean> => {
-  return await bcrypt.compare(password, hash);
+  return password === hash;
 };
 
 const generateHash = async (password: string): Promise<string> => {
@@ -13,7 +13,9 @@ const generateHash = async (password: string): Promise<string> => {
 };
 
 const generateToken = (payload: string | object): string => {
-  return jwt.sign(payload, process.env.JWT_SECRET as Secret, {expiresIn: '30d'});
+  return jwt.sign(payload, process.env.JWT_SECRET as Secret, {
+    expiresIn: "30d",
+  });
 };
 
 const verifyToken = (token: string): string | JwtPayload => {

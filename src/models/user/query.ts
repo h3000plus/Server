@@ -1,61 +1,69 @@
-import User from "./model.js";
-import { IUser } from "../../interfaces/user.interface.js";
+import Customer from "./model.js";
+import { ICustomer } from "../../interfaces/user.interface.js";
 // import UserLogin from "../userLogin/model.js";
 
 const findUserByEmail = async (email: string) => {
-    try {
-        const user = await User.findOne({ email: email });
+  try {
+    const user = await Customer.findOne({ email: email });
 
-        return user;
-    } catch (error) {
-        console.error("Error in findUserByEmail:", error);
-        throw error;
-    }
+    return user;
+  } catch (error) {
+    console.error("Error in findUserByEmail:", error);
+    throw error;
+  }
 };
 
 const findUserById = async (id: string) => {
-    try {
-        const user = await User.findById(id);
+  try {
+    const user = await Customer.findById(id);
 
-        return user;
-    } catch (error) {
-        console.error("Error in findUserByEmail:", error);
-        throw error;
-    }
+    return user;
+  } catch (error) {
+    console.error("Error in findUserByEmail:", error);
+    throw error;
+  }
 };
 
-const createUser = async (userObject: IUser) => {
-    try {
-        const { email, address, password } = userObject;
-        const user = await User.create({ email, address, password });
-        return user;
-    } catch (error) {
-        console.error("Error in createUser:", error);
-        throw error;
-    }
+const createUser = async (userObject: ICustomer) => {
+  try {
+    const { email, address, password } = userObject;
+    const user = await Customer.create({ email, address, password });
+    return user;
+  } catch (error) {
+    console.error("Error in createUser:", error);
+    throw error;
+  }
 };
 
 const isEmailExists = async (email: string) => {
-    try {
-        console.log(email);
-        const existingUser = await User.findOne( {email} );
-        // console.log(existingUser);
-        if (existingUser) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    } catch (error) {
-        console.error("Error in isEmailExists:", error);
-        throw error;
+  try {
+    const existingUser = await Customer.findOne({ email });
+    // console.log(existingUser);
+    if (existingUser) {
+      return true;
+    } else {
+      return false;
     }
+  } catch (error) {
+    console.error("Error in isEmailExists:", error);
+    throw error;
+  }
 };
 
+const insertManyCustomers = async (customers: [ICustomer]) => {
+  try {
+    const insertedCustomers = await Customer.insertMany(customers);
+    return insertedCustomers;
+  } catch (error) {
+    console.log("error when inserting data into mongoDb", error);
+    throw error;
+  }
+};
 
 export {
-    findUserByEmail,
-    findUserById,
-    createUser,
-    isEmailExists
+  findUserByEmail,
+  findUserById,
+  createUser,
+  isEmailExists,
+  insertManyCustomers,
 };
