@@ -1,8 +1,8 @@
-import User from "./model.js";
+import Customer from "./model.js";
 // import UserLogin from "../userLogin/model.js";
 const findUserByEmail = async (email) => {
     try {
-        const user = await User.findOne({ email: email });
+        const user = await Customer.findOne({ email: email });
         return user;
     }
     catch (error) {
@@ -12,7 +12,7 @@ const findUserByEmail = async (email) => {
 };
 const findUserById = async (id) => {
     try {
-        const user = await User.findById(id);
+        const user = await Customer.findById(id);
         return user;
     }
     catch (error) {
@@ -23,7 +23,7 @@ const findUserById = async (id) => {
 const createUser = async (userObject) => {
     try {
         const { email, address, password } = userObject;
-        const user = await User.create({ email, address, password });
+        const user = await Customer.create({ email, address, password });
         return user;
     }
     catch (error) {
@@ -33,8 +33,7 @@ const createUser = async (userObject) => {
 };
 const isEmailExists = async (email) => {
     try {
-        console.log(email);
-        const existingUser = await User.findOne({ email });
+        const existingUser = await Customer.findOne({ email });
         // console.log(existingUser);
         if (existingUser) {
             return true;
@@ -48,5 +47,15 @@ const isEmailExists = async (email) => {
         throw error;
     }
 };
-export { findUserByEmail, findUserById, createUser, isEmailExists };
+const insertManyCustomers = async (customers) => {
+    try {
+        const insertedCustomers = await Customer.insertMany(customers);
+        return insertedCustomers;
+    }
+    catch (error) {
+        console.log("error when inserting data into mongoDb", error);
+        throw error;
+    }
+};
+export { findUserByEmail, findUserById, createUser, isEmailExists, insertManyCustomers, };
 //# sourceMappingURL=query.js.map

@@ -23,18 +23,16 @@ const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDeta
             return item._id === cartItem._id;
         })[0];
         const addons = cartItem.addon?.map((item) => {
-            return {
-                ingredientName: item.name,
-                _id: item._id,
-                quantity: cartItem.quantity,
-            };
+            const addon = menuItem.item.options.add.filter((ing) => {
+                return item._id == ing._id;
+            })[0];
+            return addon;
         });
         const no = cartItem.no?.map((item) => {
-            return {
-                ingredientName: item.name,
-                _id: item._id,
-                quantity: cartItem.quantity,
-            };
+            const no = menuItem.item.options.no.filter((ing) => {
+                return item._id == ing._id;
+            })[0];
+            return no;
         });
         return {
             _id: cartItem._id,
@@ -83,7 +81,6 @@ const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDeta
     };
 };
 export const sendToSkeleton = async (preparedOrder) => {
-    console.log(JSON.stringify(preparedOrder));
     const res = await axios.post(process.env.CREATE_ORDER, { order: preparedOrder }, { headers: { Authorization: process.env.SKELETON_TOKEN } });
     return res.data;
 };

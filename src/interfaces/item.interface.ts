@@ -3,22 +3,22 @@
 import { ObjectId } from "mongoose";
 
 export interface IItem {
-    resId: ObjectId,
-    name: string,
-    image: string,
-    description: string,
-    like: string,
-    price: number,
-    category: string
-    addon?: [IIngredient],
-    no?: [IIngredient]
+  resId: ObjectId;
+  name: string;
+  image: string;
+  description: string;
+  like: string;
+  price: number;
+  category: string;
+  addon?: [IIngredient];
+  no?: [IIngredient];
 }
 
 export interface IIngredient {
-    name: string,
-    price?: number
+  name: string;
+  price?: number;
+  id?: number;
 }
-
 
 // export interface PackagingInterface {
 //     dimensionLength?: number,

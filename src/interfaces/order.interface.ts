@@ -3,6 +3,7 @@ import { ObjectId } from "mongoose";
 export interface IOrder {
   _id?: string;
   userId?: string;
+  restaurantId?: string;
   deliveryFee?: number;
   deliveryTime?: number;
   cartItems: ICart[];
@@ -11,7 +12,7 @@ export interface IOrder {
   ordertype: string;
   delivery: boolean;
   pickup: boolean;
-  createdAt: Date
+  createdAt: Date;
 }
 
 export interface ICart {
@@ -31,6 +32,7 @@ export interface IIngredient {
   name: string;
   price: number;
   _id?: ObjectId;
+  id?: number;
 }
 
 export interface IScheduleOrder {

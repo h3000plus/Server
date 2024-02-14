@@ -14,14 +14,14 @@ export const prepareForSkeleton = async (orderData: IOrder) => {
     `${process.env.MENU_ITEMS}${orderData.cartItems[0].resId}`,
     { headers }
   );
-  
+
   const allMenuItemsWithAdditionalDetails = response.data;
-    // console.log(allMenuItemsWithAdditionalDetails);
+  // console.log(allMenuItemsWithAdditionalDetails);
   const addAdditionalDetails = await addDetailsToRestaurants(
     orderData,
     allMenuItemsWithAdditionalDetails
   );
-  
+
   return {
     _id: orderData._id,
     restaurantId: parseInt(orderData.cartItems[0].resId),
@@ -33,27 +33,23 @@ const addDetailsToRestaurants = async (
   orderData: IOrder,
   allMenuItemsWithAdditionalDetails: any
 ) => {
-  
   const itemsWithDetails = orderData.cartItems.map((cartItem) => {
     const menuItem = allMenuItemsWithAdditionalDetails.filter((item: any) => {
-      
       return item._id === cartItem._id;
     })[0];
-    
+
     const addons = cartItem.addon?.map((item) => {
-      return {
-        ingredientName: item.name,
-        _id: item._id,
-        quantity: cartItem.quantity,
-      };
+      const addon = menuItem.item.options.add.filter((ing: any) => {
+        return item._id == ing._id;
+      })[0];
+      return addon;
     });
 
     const no = cartItem.no?.map((item) => {
-      return {
-        ingredientName: item.name,
-        _id: item._id,
-        quantity: cartItem.quantity,
-      };
+      const no = menuItem.item.options.no.filter((ing: any) => {
+        return item._id == ing._id;
+      })[0];
+      return no;
     });
 
     return {
@@ -105,7 +101,6 @@ const addDetailsToRestaurants = async (
 };
 
 export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
-  console.log(JSON.stringify(preparedOrder));
   const res = await axios.post<any>(
     process.env.CREATE_ORDER as string,
     { order: preparedOrder },
