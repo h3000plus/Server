@@ -12,7 +12,7 @@ export interface ILongLat {
 }
 
 export interface ICustomerPreference {
-  tastyTags: [String];
+  tastyTags: Object;
   category: [String];
 }
 export interface ICustomer {

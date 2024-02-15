@@ -21,7 +21,7 @@ const LatLongSchema = new Schema<ILongLat>({
 });
 
 const CustomerPreference = new Schema<ICustomerPreference>({
-  tastyTags: { type: [String], required: false },
+  tastyTags: { type: Object, required: false },
   category: { type: [String], required: false },
 });
 
