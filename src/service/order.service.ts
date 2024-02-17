@@ -29,11 +29,10 @@ export const prepareForSkeleton = async (orderData: IOrder) => {
   };
 };
 
-const addDetailsToRestaurants = async (
-  orderData: IOrder,
-  allMenuItemsWithAdditionalDetails: any
-) => {
+const addDetailsToRestaurants = async (orderData: IOrder, allMenuItemsWithAdditionalDetails: any) => {
   const itemsWithDetails = orderData.cartItems.map((cartItem) => {
+
+    // Searching out the ordered items from MENU
     const menuItem = allMenuItemsWithAdditionalDetails.filter((item: any) => {
       return item._id === cartItem._id;
     })[0];

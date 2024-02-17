@@ -26,8 +26,8 @@ const findUserById = async (id: string) => {
 
 const createUser = async (userObject: ICustomer) => {
   try {
-    const { email, address, password } = userObject;
-    const user = await Customer.create({ email, address, password });
+    const { email, address, password, customerPreference, currentLatLong, dob } = userObject;
+    const user = await Customer.create({ email, address, password, customerPreference, currentLatLong, dob });
     return user;
   } catch (error) {
     console.error("Error in createUser:", error);

@@ -15,6 +15,14 @@ export interface ICustomerPreference {
   tastyTags: Object;
   category: [String];
 }
+
+export interface IAddress {
+  address: string,
+  buildingName: string,
+  buildingType: string,
+  floor: string,
+}
+
 export interface ICustomer {
   _id?: string;
   name: string;
@@ -24,7 +32,11 @@ export interface ICustomer {
   phoneNumber: string;
   email: string;
   password: string;
-  address: string;
+
+  address: IAddress;
+
+
+
   currentLatLong?: ILongLat;
   allOrderIdList: string[];
   customerPreference: ICustomerPreference; // Tasty Tag Enums from Menu

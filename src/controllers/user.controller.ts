@@ -24,7 +24,8 @@ const signupController = async (req: Request, res: Response) => {
 
     const user = await createUser(userObject);
     res.status(201).json({
-      messeag: "added",
+      message: "added",
+      data: user
     });
   } catch (error) {
     res.status(500).json({

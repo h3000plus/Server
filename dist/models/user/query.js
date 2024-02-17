@@ -22,8 +22,8 @@ const findUserById = async (id) => {
 };
 const createUser = async (userObject) => {
     try {
-        const { email, address, password } = userObject;
-        const user = await Customer.create({ email, address, password });
+        const { email, address, password, customerPreference, currentLatLong, dob } = userObject;
+        const user = await Customer.create({ email, address, password, customerPreference, currentLatLong, dob });
         return user;
     }
     catch (error) {

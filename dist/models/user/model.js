@@ -12,21 +12,27 @@ const LatLongSchema = new Schema({
     latitude: { type: Number, required: true },
 });
 const CustomerPreference = new Schema({
-    tastyTags: { type: [String], required: false },
+    tastyTags: { type: Object, required: true },
     category: { type: [String], required: false },
+});
+const AddressSchema = new Schema({
+    address: { type: String, required: true },
+    buildingName: { type: String, required: true },
+    buildingType: { type: String, required: true },
+    floor: { type: String, required: true },
 });
 const CustomerSchema = new Schema({
     name: { type: String, required: false },
-    dob: { type: Date, required: false },
+    dob: { type: Date, required: true },
     age: { type: Number, required: false },
     customerImage: { type: String, required: false },
     phoneNumber: { type: String, required: false },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    address: { type: String, required: true },
+    address: { type: AddressSchema, required: true },
     currentLatLong: { type: LatLongSchema },
     allOrderIdList: { type: [String], required: false },
-    customerPreference: { type: CustomerPreference, required: false }, // Tasty Tag Enums from Menu
+    customerPreference: { type: CustomerPreference, required: false },
     loyaltyPoints: { type: Number, required: false },
 });
 // Middleware to auto-increment
