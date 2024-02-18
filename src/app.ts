@@ -8,6 +8,7 @@ import itemRouter from './routers/item.router.js';
 import orderRouter from './routers/order.router.js';
 import restaurantRouter from './routers/restaurant.router.js'
 import cuisineRouter from './routers/category.router.js';
+import Customer from './models/user/model.js';
 
 config();
 
@@ -19,9 +20,10 @@ const port = 3000;
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
+
 
 app.use(userRouter);
 app.use(restaurantRouter);
@@ -34,7 +36,7 @@ app.get('/', (req, res) => {
     res.status(200).send('Hello World!');
 })
 
-async function main (){
+async function main() {
     try {
         await mongoose.connect(process.env.DB_URI as string)
         console.log('mongoose connected')
@@ -42,7 +44,7 @@ async function main (){
             console.log(`App is listening on port ${port}`);
         })
     } catch (error) {
-        console.log(error) 
+        console.log(error)
     }
 }
 
