@@ -108,10 +108,23 @@ async function updateTastyTagsScoreInDB(itemsArray: any[], userId: string) {
   }
 }
 
+const getUserDetails = async (id: string) => {
+  try {
+      const userDetails = await Customer.findById(id); // Assuming User model has a method to find user by ID
+      if (!userDetails) {
+          throw new Error('User not found');
+      }
+      return userDetails;
+  } catch (error) {
+      throw error;
+  }
+};
+
 export {
   findUserByEmail,
   findUserById,
   createUser,
   isEmailExists,
+  getUserDetails,
   insertManyCustomers, updateTastyTagsScoreInDB
 };

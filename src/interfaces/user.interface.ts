@@ -38,7 +38,9 @@ export interface ICustomer {
 
 
   currentLatLong?: ILongLat;
+  doorwayLatLong?: ILongLat;
   allOrderIdList: string[];
   customerPreference: ICustomerPreference; // Tasty Tag Enums from Menu
   loyaltyPoints?: number;
+  uprn: string;
 }

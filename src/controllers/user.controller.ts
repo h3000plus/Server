@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   createUser,
   findUserByEmail,
+  getUserDetails,
   insertManyCustomers,
   isEmailExists,
 } from "../models/user/query.js";
@@ -104,9 +105,24 @@ const postManyCustomers = async (req: Request, res: Response) => {
   }
 };
 
+
+const getUserDetailsByIdController = async (req: Request, res: Response) => {
+  try {
+    console.log(req.params.id);
+    const id = req.params.id; // Access params using square brackets for keys containing hyphens
+    const userDetails = await getUserDetails(id); 
+    res.status(200).json(userDetails);
+  } catch (error) {
+    res.status(500).json({
+      message: error,
+    });
+  }
+};
+
 export {
   signupController,
   loginController,
   checkEmailController,
   postManyCustomers,
+  getUserDetailsByIdController
 };

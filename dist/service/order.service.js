@@ -17,22 +17,25 @@ export const prepareForSkeleton = async (orderData) => {
         ...addAdditionalDetails,
     };
 };
-export const prepareForRider = async (orderData, userId) => {
+export const prepareForRider = async (fOrder, sOrder) => {
     return {
-        _id: orderData._id,
+        _id: fOrder._id,
         riderId: null,
-        userId: userId,
-        restaurantId: orderData.restaurantId,
-        items: orderData.items,
-        orderTemperatureType: 'HOT',
+        userId: sOrder.userId,
+        restaurantId: fOrder.restaurantId,
+        items: fOrder.items,
+        orderTemperatureType: 'Hot',
         deliveryPoint: {
             longitude: 53.515333,
             latitude: -6.190796
         },
         orderDeliveryTime: {
-            minTime: calculateDeliveryTime(orderData)[0],
-            maxTime: calculateDeliveryTime(orderData)[1]
-        }
+            minTime: calculateDeliveryTime(fOrder)[0],
+            maxTime: calculateDeliveryTime(fOrder)[1]
+        },
+        deliveryFee: 5,
+        subtotal: sOrder.subtotal,
+        createdAt: sOrder.createdAt
     };
 };
 function calculateDeliveryTime(order) {
@@ -120,6 +123,10 @@ const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDeta
         items: itemsWithDetails,
         createdAt: "",
     };
+};
+export const sendToRider = async (preparedOrder) => {
+    const res = await axios.post('http://localhost:5000/order/orderDetails', preparedOrder);
+    return res.data;
 };
 export const sendToSkeleton = async (preparedOrder) => {
     const res = await axios.post(process.env.CREATE_ORDER, { order: preparedOrder }, { headers: { Authorization: process.env.SKELETON_TOKEN } });

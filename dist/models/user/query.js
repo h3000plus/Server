@@ -90,5 +90,17 @@ async function updateTastyTagsScoreInDB(itemsArray, userId) {
         throw new Error(error.message);
     }
 }
-export { findUserByEmail, findUserById, createUser, isEmailExists, insertManyCustomers, updateTastyTagsScoreInDB };
+const getUserDetails = async (id) => {
+    try {
+        const userDetails = await Customer.findById(id); // Assuming User model has a method to find user by ID
+        if (!userDetails) {
+            throw new Error('User not found');
+        }
+        return userDetails;
+    }
+    catch (error) {
+        throw error;
+    }
+};
+export { findUserByEmail, findUserById, createUser, isEmailExists, getUserDetails, insertManyCustomers, updateTastyTagsScoreInDB };
 //# sourceMappingURL=query.js.map

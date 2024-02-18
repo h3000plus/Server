@@ -1,4 +1,4 @@
-import { createUser, findUserByEmail, insertManyCustomers, isEmailExists, } from "../models/user/query.js";
+import { createUser, findUserByEmail, getUserDetails, insertManyCustomers, isEmailExists, } from "../models/user/query.js";
 import { comparePassword, generateToken, } from "../utilities/auth.js";
 // signup
 const signupController = async (req, res) => {
@@ -90,5 +90,18 @@ const postManyCustomers = async (req, res) => {
         });
     }
 };
-export { signupController, loginController, checkEmailController, postManyCustomers, };
+const getUserDetailsByIdController = async (req, res) => {
+    try {
+        console.log(req.params.id);
+        const id = req.params.id; // Access params using square brackets for keys containing hyphens
+        const userDetails = await getUserDetails(id);
+        res.status(200).json(userDetails);
+    }
+    catch (error) {
+        res.status(500).json({
+            message: error,
+        });
+    }
+};
+export { signupController, loginController, checkEmailController, postManyCustomers, getUserDetailsByIdController };
 //# sourceMappingURL=user.controller.js.map

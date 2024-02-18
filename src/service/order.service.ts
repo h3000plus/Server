@@ -30,23 +30,26 @@ export const prepareForSkeleton = async (orderData: IOrder) => {
 };
 
 
-export const prepareForRider = async (orderData: any, userId: string) => {
-
+export const prepareForRider = async (fOrder: any, sOrder: any) => {
+  
   return {
-    _id: orderData._id,
+    _id: fOrder._id,
     riderId: null,
-    userId: userId,
-    restaurantId: orderData.restaurantId,
-    items: orderData.items,
-    orderTemperatureType: 'HOT',
+    userId: sOrder.userId,
+    restaurantId: fOrder.restaurantId,
+    items: fOrder.items,
+    orderTemperatureType: 'Hot',
     deliveryPoint: {
       longitude: 53.515333,
       latitude: -6.190796
     },
     orderDeliveryTime: {
-      minTime: calculateDeliveryTime(orderData)[0],
-      maxTime: calculateDeliveryTime(orderData)[1]
-    }
+      minTime: calculateDeliveryTime(fOrder)[0],
+      maxTime: calculateDeliveryTime(fOrder)[1]
+    },
+    deliveryFee: 5,
+    subtotal: sOrder.subtotal,
+    createdAt: sOrder.createdAt 
   }
 }
 
@@ -152,6 +155,15 @@ const addDetailsToRestaurants = async (
     items: itemsWithDetails,
     createdAt: "",
   };
+};
+
+export const sendToRider = async (preparedOrder: any): Promise<any> => {
+  const res = await axios.post<any>(
+    'http://localhost:5000/order/orderDetails',
+    preparedOrder,
+  );
+
+  return res.data;
 };
 
 export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
