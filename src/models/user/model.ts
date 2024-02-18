@@ -21,20 +21,21 @@ const LatLongSchema = new Schema<ILongLat>({
 });
 
 const CustomerPreference = new Schema<ICustomerPreference>({
-  tastyTags: { type: [String], required: false },
+  tastyTags: { type: Object, required: false },
   category: { type: [String], required: false },
 });
 
 const CustomerSchema = new Schema<ICustomer>({
   name: { type: String, required: false },
+  email: { type: String, required: true },
   dob: { type: Date, required: false },
-  age: { type: Number, required: false },
   customerImage: { type: String, required: false },
   phoneNumber: { type: String, required: false },
-  email: { type: String, required: true },
+  uprn: { type: String },
   password: { type: String, required: true },
   address: { type: String, required: true },
   currentLatLong: { type: LatLongSchema },
+  doorwayLatLong: { type: LatLongSchema },
   allOrderIdList: { type: [String], required: false },
   customerPreference: { type: CustomerPreference, required: false }, // Tasty Tag Enums from Menu
   loyaltyPoints: { type: Number, required: false },

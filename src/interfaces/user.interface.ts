@@ -12,7 +12,7 @@ export interface ILongLat {
 }
 
 export interface ICustomerPreference {
-  tastyTags: [String];
+  tastyTags: Object;
   category: [String];
 }
 export interface ICustomer {
@@ -26,7 +26,9 @@ export interface ICustomer {
   password: string;
   address: string;
   currentLatLong?: ILongLat;
+  doorwayLatLong?: ILongLat;
   allOrderIdList: string[];
   customerPreference: ICustomerPreference; // Tasty Tag Enums from Menu
   loyaltyPoints?: number;
+  uprn: string;
 }
