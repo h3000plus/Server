@@ -12,6 +12,7 @@ import {
   prepareForSkeleton,
   sendToSkeleton,
 } from "../service/order.service.js";
+import { updateTastyTagsScoreInDB } from "../models/user/query.js";
 
 export const createOrderController = async (
   req: Request,
@@ -24,6 +25,10 @@ export const createOrderController = async (
     const createdOrder = await createOrder(orderData);
 
     const detailedOrder = await prepareForSkeleton(createdOrder);
+
+    // updating tasty tags score in customer model
+    const updateTastyTagScoreInDB = await updateTastyTagsScoreInDB(detailedOrder.items, req.body.user.id)
+
 
     const skeletonResponse = await sendToSkeleton(detailedOrder);
 

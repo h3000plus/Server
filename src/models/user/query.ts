@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongoose';
 import Customer from "./model.js";
 import { ICustomer } from "../../interfaces/user.interface.js";
 // import UserLogin from "../userLogin/model.js";
@@ -60,10 +61,57 @@ const insertManyCustomers = async (customers: [ICustomer]) => {
   }
 };
 
+
+
+// extract tasty tags from orders and update tasty tag scores in db
+async function updateTastyTagsScoreInDB(itemsArray: any[], userId: string) {
+  try {
+    let tastyTagsArray: string[] = []
+
+    // extracting the tasty tags
+    itemsArray.forEach((singleFullItem) => {
+      tastyTagsArray = tastyTagsArray.concat(singleFullItem.item.itemProfileTastyTags)
+    });
+
+    // creating an array with duplicate free extracted tasty tags
+    const duplicateFreeTatyTags = tastyTagsArray.filter((tag, index) => {
+      return tastyTagsArray.indexOf(tag) === index
+    })
+
+    // Finding the customer
+    const userDocument = await Customer.findById(userId) as ICustomer
+
+    interface TastyTags {
+      [key: string]: number;
+    }
+    const existingTastyTags = userDocument.customerPreference.tastyTags as TastyTags
+
+    // updating the tasty tags
+    duplicateFreeTatyTags.forEach((tag) => {
+      if (existingTastyTags[tag]) {
+        existingTastyTags[tag] = existingTastyTags[tag] + 1
+      } else {
+        existingTastyTags[tag] = 1
+      }
+    })
+
+    // updating the customer document in db
+    const updatedDocumentInDB = await Customer.findByIdAndUpdate(userId,
+      { $set: { 'customerPreference.tastyTags': existingTastyTags } },
+      { new: true }
+    );
+    return updatedDocumentInDB
+
+  } catch (error) {
+    console.log(error);
+    throw new Error((error as Error).message)
+  }
+}
+
 export {
   findUserByEmail,
   findUserById,
   createUser,
   isEmailExists,
-  insertManyCustomers,
+  insertManyCustomers, updateTastyTagsScoreInDB
 };
