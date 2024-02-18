@@ -27,7 +27,7 @@ export async function getFilteredRestaurants(
       return {
         resId: res.restaurantId,
         resName: res.restaurantName,
-        resImage: res.restaurantLogo,
+        resImage: res.restaurantCoverPhoto,
       };
     });
 
