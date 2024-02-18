@@ -108,8 +108,8 @@ const postManyCustomers = async (req: Request, res: Response) => {
 
 const getUserDetailsByIdController = async (req: Request, res: Response) => {
   try {
-    console.log(req.params);
-    const id = req.params['user-id']; // Access params using square brackets for keys containing hyphens
+    console.log(req.params.id);
+    const id = req.params.id; // Access params using square brackets for keys containing hyphens
     const userDetails = await getUserDetails(id); 
     res.status(200).json(userDetails);
   } catch (error) {
