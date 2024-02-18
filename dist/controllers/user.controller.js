@@ -1,16 +1,19 @@
 import { createUser, findUserByEmail, insertManyCustomers, isEmailExists, } from "../models/user/query.js";
-import { comparePassword, generateHash, generateToken, } from "../utilities/auth.js";
+import { comparePassword, generateToken, } from "../utilities/auth.js";
 // signup
 const signupController = async (req, res) => {
     try {
-        const hashedPassword = await generateHash(req.body.password);
-        const userObject = {
-            ...req.body,
-            password: hashedPassword,
-        };
-        const user = await createUser(userObject);
+        /*  const hashedPassword = await generateHash(req.body.password);
+     
+         const userObject = {
+           ...req.body,
+           password: hashedPassword,
+         };
+         const user = await createUser(userObject); */
+        const user = await createUser(req.body);
         res.status(201).json({
-            messeag: "added",
+            message: "added",
+            data: user
         });
     }
     catch (error) {
@@ -23,8 +26,10 @@ const signupController = async (req, res) => {
 const loginController = async (req, res) => {
     try {
         const user = await findUserByEmail(req.body.email);
+        // console.log('user', user);
         if (user) {
             const isMatch = await comparePassword(req.body.password, user.password);
+            console.log('is match', isMatch);
             if (isMatch) {
                 // generate token
                 const payload = {

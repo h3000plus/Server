@@ -22,8 +22,8 @@ const findUserById = async (id) => {
 };
 const createUser = async (userObject) => {
     try {
-        const { email, address, password } = userObject;
-        const user = await Customer.create({ email, address, password });
+        const { email, address, password, customerPreference, currentLatLong, dob } = userObject;
+        const user = await Customer.create({ email, address, password, customerPreference, currentLatLong, dob });
         return user;
     }
     catch (error) {
@@ -57,5 +57,38 @@ const insertManyCustomers = async (customers) => {
         throw error;
     }
 };
-export { findUserByEmail, findUserById, createUser, isEmailExists, insertManyCustomers, };
+// extract tasty tags from orders and update tasty tag scores in db
+async function updateTastyTagsScoreInDB(itemsArray, userId) {
+    try {
+        let tastyTagsArray = [];
+        // extracting the tasty tags
+        itemsArray.forEach((singleFullItem) => {
+            tastyTagsArray = tastyTagsArray.concat(singleFullItem.item.itemProfileTastyTags);
+        });
+        // creating an array with duplicate free extracted tasty tags
+        const duplicateFreeTatyTags = tastyTagsArray.filter((tag, index) => {
+            return tastyTagsArray.indexOf(tag) === index;
+        });
+        // Finding the customer
+        const userDocument = await Customer.findById(userId);
+        const existingTastyTags = userDocument.customerPreference.tastyTags;
+        // updating the tasty tags
+        duplicateFreeTatyTags.forEach((tag) => {
+            if (existingTastyTags[tag]) {
+                existingTastyTags[tag] = existingTastyTags[tag] + 1;
+            }
+            else {
+                existingTastyTags[tag] = 1;
+            }
+        });
+        // updating the customer document in db
+        const updatedDocumentInDB = await Customer.findByIdAndUpdate(userId, { $set: { 'customerPreference.tastyTags': existingTastyTags } }, { new: true });
+        return updatedDocumentInDB;
+    }
+    catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+export { findUserByEmail, findUserById, createUser, isEmailExists, insertManyCustomers, updateTastyTagsScoreInDB };
 //# sourceMappingURL=query.js.map

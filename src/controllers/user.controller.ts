@@ -15,16 +15,19 @@ import {
 // signup
 const signupController = async (req: Request, res: Response) => {
   try {
-    const hashedPassword = await generateHash(req.body.password);
 
-    const userObject = {
-      ...req.body,
-      password: hashedPassword,
-    };
+    /*  const hashedPassword = await generateHash(req.body.password);
+ 
+     const userObject = {
+       ...req.body,
+       password: hashedPassword,
+     };
+     const user = await createUser(userObject); */
 
-    const user = await createUser(userObject);
+    const user = await createUser(req.body);
     res.status(201).json({
-      messeag: "added",
+      message: "added",
+      data: user
     });
   } catch (error) {
     res.status(500).json({
@@ -37,8 +40,10 @@ const signupController = async (req: Request, res: Response) => {
 const loginController = async (req: Request, res: Response) => {
   try {
     const user = await findUserByEmail(req.body.email);
+    // console.log('user', user);
     if (user) {
       const isMatch = await comparePassword(req.body.password, user.password);
+      console.log('is match', isMatch);
       if (isMatch) {
         // generate token
         const payload = {
