@@ -1,14 +1,14 @@
 import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
-import { prepareForRider, prepareForSkeleton, sendToSkeleton, } from "../service/order.service.js";
+import { prepareForRider, prepareForSkeleton, sendToRider, sendToSkeleton, } from "../service/order.service.js";
 export const createOrderController = async (req, res) => {
     try {
         const orderData = req.body;
         orderData.userId = req.body.user.id;
         const createdOrder = await createOrder(orderData);
         const detailedOrder = await prepareForSkeleton(createdOrder);
-        const riderOrder = await prepareForRider(detailedOrder, orderData.userId);
-        console.log(riderOrder);
+        const riderOrder = await prepareForRider(detailedOrder, orderData);
+        const riderResponse = await sendToRider(riderOrder);
         const skeletonResponse = await sendToSkeleton(detailedOrder);
         res.status(201).json("order Posted");
         // res.status(201).json(createdOrder);

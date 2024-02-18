@@ -12,6 +12,7 @@ import {
 
   prepareForRider,
   prepareForSkeleton,
+  sendToRider,
   sendToSkeleton,
 } from "../service/order.service.js";
 
@@ -27,8 +28,10 @@ export const createOrderController = async (
 
     const detailedOrder = await prepareForSkeleton(createdOrder);
 
-    const riderOrder = await prepareForRider(detailedOrder, orderData.userId);
-    console.log(riderOrder);
+    const riderOrder = await prepareForRider(detailedOrder, orderData);
+    
+    const riderResponse = await sendToRider(riderOrder);
+    
     const skeletonResponse = await sendToSkeleton(detailedOrder);
 
     res.status(201).json("order Posted");
