@@ -17,6 +17,46 @@ export const prepareForSkeleton = async (orderData) => {
         ...addAdditionalDetails,
     };
 };
+export const prepareForRider = async (orderData, userId) => {
+    return {
+        _id: orderData._id,
+        riderId: null,
+        userId: userId,
+        restaurantId: orderData.restaurantId,
+        items: orderData.items,
+        orderTemperatureType: 'HOT',
+        deliveryPoint: {
+            longitude: 53.515333,
+            latitude: -6.190796
+        },
+        orderDeliveryTime: {
+            minTime: calculateDeliveryTime(orderData)[0],
+            maxTime: calculateDeliveryTime(orderData)[1]
+        }
+    };
+};
+function calculateDeliveryTime(order) {
+    let maxPreparationTime = 0;
+    let minLastingTime = 0;
+    if (order.items[0].item.itemLastingTime) {
+        minLastingTime = order.items[0].item.itemLastingTime;
+    }
+    for (let i = 0; i < order.items.length; i++) {
+        if (order.items[i].item.itemPreparationTime > maxPreparationTime) {
+            maxPreparationTime = order.items[i].item.itemPreparationTime;
+        }
+        if (order.items[i].item.itemLastingTime < minLastingTime) {
+            minLastingTime = order.items[i].item.itemLastingTime;
+        }
+    }
+    let totalMinutesForMin = maxPreparationTime + minLastingTime - 20;
+    let totalMinutesForMax = maxPreparationTime + minLastingTime - 10;
+    const minTime = new Date(Date.now());
+    minTime.setMinutes(minTime.getMinutes() + totalMinutesForMin);
+    const maxTime = new Date(Date.now());
+    maxTime.setMinutes(maxTime.getMinutes() + totalMinutesForMax);
+    return [minTime, maxTime];
+}
 const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDetails) => {
     const itemsWithDetails = orderData.cartItems.map((cartItem) => {
         const menuItem = allMenuItemsWithAdditionalDetails.filter((item) => {

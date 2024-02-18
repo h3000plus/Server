@@ -19,7 +19,7 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
             return {
                 resId: res.restaurantId,
                 resName: res.restaurantName,
-                resImage: res.restaurantLogo,
+                resImage: res.restaurantCoverPhoto,
             };
         });
         return restaurants;
