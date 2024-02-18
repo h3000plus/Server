@@ -1,6 +1,6 @@
 import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
-import { prepareForSkeleton, sendToSkeleton, } from "../service/order.service.js";
+import { prepareForSkeleton, } from "../service/order.service.js";
 import { updateTastyTagsScoreInDB } from "../models/user/query.js";
 export const createOrderController = async (req, res) => {
     try {
@@ -10,7 +10,7 @@ export const createOrderController = async (req, res) => {
         const detailedOrder = await prepareForSkeleton(createdOrder);
         // updating tasty tags score in customer model
         const updateTastyTagScoreInDB = await updateTastyTagsScoreInDB(detailedOrder.items, req.body.user.id);
-        const skeletonResponse = await sendToSkeleton(detailedOrder);
+        // const skeletonResponse = await sendToSkeleton(detailedOrder);
         res.status(201).json("order Posted");
         // res.status(201).json(createdOrder);
     }

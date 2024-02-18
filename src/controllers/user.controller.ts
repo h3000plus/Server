@@ -15,14 +15,16 @@ import {
 // signup
 const signupController = async (req: Request, res: Response) => {
   try {
-    const hashedPassword = await generateHash(req.body.password);
 
-    const userObject = {
-      ...req.body,
-      password: hashedPassword,
-    };
+    /*  const hashedPassword = await generateHash(req.body.password);
+ 
+     const userObject = {
+       ...req.body,
+       password: hashedPassword,
+     };
+     const user = await createUser(userObject); */
 
-    const user = await createUser(userObject);
+    const user = await createUser(req.body);
     res.status(201).json({
       message: "added",
       data: user

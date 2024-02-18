@@ -30,7 +30,7 @@ export const createOrderController = async (
     const updateTastyTagScoreInDB = await updateTastyTagsScoreInDB(detailedOrder.items, req.body.user.id)
 
 
-    const skeletonResponse = await sendToSkeleton(detailedOrder);
+    // const skeletonResponse = await sendToSkeleton(detailedOrder);
 
     res.status(201).json("order Posted");
     // res.status(201).json(createdOrder);

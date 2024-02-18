@@ -87,7 +87,7 @@ async function updateTastyTagsScoreInDB(itemsArray, userId) {
     }
     catch (error) {
         console.log(error);
-        // throw error properly here
+        throw new Error(error.message);
     }
 }
 export { findUserByEmail, findUserById, createUser, isEmailExists, insertManyCustomers, updateTastyTagsScoreInDB };
