@@ -125,7 +125,7 @@ const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDeta
     };
 };
 export const sendToRider = async (preparedOrder) => {
-    const res = await axios.post('http://localhost:5000/order/orderDetails', preparedOrder);
+    const res = await axios.post(process.env.RIDER_ORDER, preparedOrder);
     return res.data;
 };
 export const sendToSkeleton = async (preparedOrder) => {

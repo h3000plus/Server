@@ -159,7 +159,7 @@ const addDetailsToRestaurants = async (
 
 export const sendToRider = async (preparedOrder: any): Promise<any> => {
   const res = await axios.post<any>(
-    'http://localhost:5000/order/orderDetails',
+    process.env.RIDER_ORDER as string,
     preparedOrder,
   );
 
