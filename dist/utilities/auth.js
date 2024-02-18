@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 const comparePassword = async (password, hash) => {
-    return password === hash;
+    const result = await bcrypt.compare(password, hash);
+    return result;
 };
 const generateHash = async (password) => {
     return await bcrypt.hash(password, 10);

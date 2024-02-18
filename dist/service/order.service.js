@@ -19,6 +19,7 @@ export const prepareForSkeleton = async (orderData) => {
 };
 const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDetails) => {
     const itemsWithDetails = orderData.cartItems.map((cartItem) => {
+        // Searching out the ordered items from MENU
         const menuItem = allMenuItemsWithAdditionalDetails.filter((item) => {
             return item._id === cartItem._id;
         })[0];

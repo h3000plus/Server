@@ -15,12 +15,12 @@ const CustomerPreference = new Schema({
     tastyTags: { type: Object, required: true },
     category: { type: [String], required: false },
 });
-const AddressSchema = new Schema({
-    address: { type: String, required: true },
-    buildingName: { type: String, required: true },
-    buildingType: { type: String, required: true },
-    floor: { type: String, required: true },
-});
+// const AddressSchema = new Schema<IAddress>({
+//   address: { type: String, required: true },
+//   buildingName: { type: String, required: true },
+//   buildingType: { type: String, required: true },
+//   floor: { type: String, required: true },
+// })
 const CustomerSchema = new Schema({
     name: { type: String, required: false },
     dob: { type: Date, required: true },
@@ -29,7 +29,7 @@ const CustomerSchema = new Schema({
     phoneNumber: { type: String, required: false },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    address: { type: AddressSchema, required: true },
+    address: { type: String, required: true },
     currentLatLong: { type: LatLongSchema },
     allOrderIdList: { type: [String], required: false },
     customerPreference: { type: CustomerPreference, required: false },

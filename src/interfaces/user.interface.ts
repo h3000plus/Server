@@ -16,12 +16,12 @@ export interface ICustomerPreference {
   category: [String];
 }
 
-export interface IAddress {
-  address: string,
-  buildingName: string,
-  buildingType: string,
-  floor: string,
-}
+// export interface IAddress {
+//   address: string,
+//   buildingName: string,
+//   buildingType: string,
+//   floor: string,
+// }
 
 export interface ICustomer {
   _id?: string;
@@ -33,7 +33,7 @@ export interface ICustomer {
   email: string;
   password: string;
 
-  address: IAddress;
+  address: string;
 
 
 

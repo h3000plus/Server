@@ -24,8 +24,10 @@ const signupController = async (req, res) => {
 const loginController = async (req, res) => {
     try {
         const user = await findUserByEmail(req.body.email);
+        // console.log('user', user);
         if (user) {
             const isMatch = await comparePassword(req.body.password, user.password);
+            console.log('is match', isMatch);
             if (isMatch) {
                 // generate token
                 const payload = {

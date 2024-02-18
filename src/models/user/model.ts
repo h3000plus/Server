@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import {
-  IAddress,
+  // IAddress,
   ICustomer,
   ICustomerPreference,
   ILongLat,
@@ -26,13 +26,13 @@ const CustomerPreference = new Schema<ICustomerPreference>({
   category: { type: [String], required: false },
 });
 
-const AddressSchema = new Schema<IAddress>({
-  address: { type: String, required: true },
-  buildingName: { type: String, required: true },
-  buildingType: { type: String, required: true },
-  floor: { type: String, required: true },
+// const AddressSchema = new Schema<IAddress>({
+//   address: { type: String, required: true },
+//   buildingName: { type: String, required: true },
+//   buildingType: { type: String, required: true },
+//   floor: { type: String, required: true },
 
-})
+// })
 
 const CustomerSchema = new Schema<ICustomer>({
   name: { type: String, required: false },
@@ -42,7 +42,7 @@ const CustomerSchema = new Schema<ICustomer>({
   phoneNumber: { type: String, required: false },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  address: { type: AddressSchema, required: true },
+  address: { type: String, required: true },
   currentLatLong: { type: LatLongSchema },
   allOrderIdList: { type: [String], required: false },
   customerPreference: { type: CustomerPreference, required: false },
