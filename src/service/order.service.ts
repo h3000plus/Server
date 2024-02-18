@@ -58,26 +58,26 @@ function calculateDeliveryTime(order: any) {
   let minLastingTime = 0;
 
   if (order.items[0].item.itemLastingTime) {
-      minLastingTime = order.items[0].item.itemLastingTime;
+    minLastingTime = order.items[0].item.itemLastingTime;
   }
 
   for (let i = 0; i < order.items.length; i++) {
-      if (order.items[i].item.itemPreparationTime > maxPreparationTime) {
-          maxPreparationTime = order.items[i].item.itemPreparationTime;
-      }
-      if (order.items[i].item.itemLastingTime < minLastingTime) {
-          minLastingTime = order.items[i].item.itemLastingTime;
-      }
+    if (order.items[i].item.itemPreparationTime > maxPreparationTime) {
+      maxPreparationTime = order.items[i].item.itemPreparationTime;
+    }
+    if (order.items[i].item.itemLastingTime < minLastingTime) {
+      minLastingTime = order.items[i].item.itemLastingTime;
+    }
   }
 
   let totalMinutesForMin = maxPreparationTime + minLastingTime - 20;
   let totalMinutesForMax = maxPreparationTime + minLastingTime - 10;
 
-  
+
   const minTime = new Date(Date.now());
   minTime.setMinutes(minTime.getMinutes() + totalMinutesForMin);
 
-  
+
   const maxTime = new Date(Date.now());
   maxTime.setMinutes(maxTime.getMinutes() + totalMinutesForMax);
 
@@ -89,6 +89,8 @@ const addDetailsToRestaurants = async (
   allMenuItemsWithAdditionalDetails: any
 ) => {
   const itemsWithDetails = orderData.cartItems.map((cartItem) => {
+
+    // Searching out the ordered items from MENU
     const menuItem = allMenuItemsWithAdditionalDetails.filter((item: any) => {
       return item._id === cartItem._id;
     })[0];
@@ -173,3 +175,5 @@ export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
 
   return res.data;
 };
+
+

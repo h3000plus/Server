@@ -1,6 +1,7 @@
 import express from "express";
 import {
   checkEmailController,
+  getUserDetailsByIdController,
   loginController,
   postManyCustomers,
   signupController,
@@ -11,7 +12,7 @@ const router = express.Router();
 router.post("/signup", signupController);
 router.post("/login", loginController);
 router.post("/check-email", checkEmailController);
-router.get("/user-details/:user-id");
+router.get("/user-details/:user-id", getUserDetailsByIdController);
 router.put("/user-update/:user-id");
 router.post("/users", postManyCustomers);
 

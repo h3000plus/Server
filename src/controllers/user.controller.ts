@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   createUser,
   findUserByEmail,
+  getUserDetails,
   insertManyCustomers,
   isEmailExists,
 } from "../models/user/query.js";
@@ -15,16 +16,19 @@ import {
 // signup
 const signupController = async (req: Request, res: Response) => {
   try {
-    const hashedPassword = await generateHash(req.body.password);
 
-    const userObject = {
-      ...req.body,
-      password: hashedPassword,
-    };
+    /*  const hashedPassword = await generateHash(req.body.password);
+ 
+     const userObject = {
+       ...req.body,
+       password: hashedPassword,
+     };
+     const user = await createUser(userObject); */
 
-    const user = await createUser(userObject);
+    const user = await createUser(req.body);
     res.status(201).json({
-      messeag: "added",
+      message: "added",
+      data: user
     });
   } catch (error) {
     res.status(500).json({
@@ -37,8 +41,10 @@ const signupController = async (req: Request, res: Response) => {
 const loginController = async (req: Request, res: Response) => {
   try {
     const user = await findUserByEmail(req.body.email);
+    // console.log('user', user);
     if (user) {
       const isMatch = await comparePassword(req.body.password, user.password);
+      console.log('is match', isMatch);
       if (isMatch) {
         // generate token
         const payload = {
@@ -99,9 +105,24 @@ const postManyCustomers = async (req: Request, res: Response) => {
   }
 };
 
+
+const getUserDetailsByIdController = async (req: Request, res: Response) => {
+  try {
+    console.log(req.params);
+    const id = req.params['user-id']; // Access params using square brackets for keys containing hyphens
+    const userDetails = await getUserDetails(id); 
+    res.status(200).json(userDetails);
+  } catch (error) {
+    res.status(500).json({
+      message: error,
+    });
+  }
+};
+
 export {
   signupController,
   loginController,
   checkEmailController,
   postManyCustomers,
+  getUserDetailsByIdController
 };
