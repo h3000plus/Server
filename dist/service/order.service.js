@@ -1,6 +1,5 @@
 import axios from "axios";
-import amqp from "amqplib";
-export const prepareForSkeleton = async (orderData) => {
+export const prepareForKDS = async (orderData) => {
     //   const allMenuItemsWithAdditionalDetails = await getMenuItemsByRestaurant(
     //     orderData.cartItems[0].resId
     //   );
@@ -125,64 +124,108 @@ const addDetailsToRestaurants = async (orderData, allMenuItemsWithAdditionalDeta
         createdAt: "",
     };
 };
-export const sendToRider = async (preparedOrder) => {
-    const res = await axios.post(process.env.RIDER_ORDER, preparedOrder);
-    return res.data;
-};
-// OLD
-// export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
-//   const res = await axios.post<any>(
-//     process.env.CREATE_ORDER as string,
-//     { order: preparedOrder },
-//     { headers: { Authorization: process.env.SKELETON_TOKEN } }
-//   );
-//   return res.data;
-// };
-// With Rabbit MQ
-// export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
-//   const res = await axios.post<any>(process.env.CREATE_ORDER as string, { order: preparedOrder }, { headers: { Authorization: process.env.SKELETON_TOKEN } });
-//   return res.data;
-// };
-const queue = "marketplaceOrder";
-let connection;
-let channel;
-// Connect and Create rabbit mq channel and connection
-export async function connectAndconsumeMQDataForMarketplaceOrders() {
-    try {
-        const ampqServer = "amqps://ujuxbuct:HxHHm8XNtbtohKTPHi30fSdILcP9FhGQ@armadillo.rmq.cloudamqp.com/ujuxbuct";
-        connection = await amqp.connect(ampqServer);
-        // channel = await connection.createChannel();
-        // await channel.assertQueue(queue, { durable: false })
-        // channel.sendToQueue(queue, Buffer.from(JSON.stringify()))
-    }
-    catch (err) {
-        console.log(err);
-    }
+// -------------------------------------------------------------------------------------------
+// Prepare data for Inventory
+export function prepareDataForInventory(fullOrder) {
+    const itemsArray = fullOrder.items;
+    const allItemIngredStorage = [];
+    const allItemPackagingStorage = [];
+    itemsArray?.forEach((orderItem) => {
+        allItemPackagingStorage.push(orderItem.item.itemPackingType[0]);
+        const ingredsInThisItem = [...orderItem.item.ingredients.rawIngredients];
+        // Deleting the No Ingreds
+        if (orderItem.item.chosenOptions && orderItem.item.chosenOptions.no.length > 0) {
+            const noIngreds = orderItem.item.chosenOptions?.no;
+            noIngreds.forEach(((singleNoIngred) => {
+                const foundIndex = ingredsInThisItem.findIndex((i) => i.id === singleNoIngred.id);
+                if (foundIndex != -1) {
+                    ingredsInThisItem.splice(foundIndex, 1);
+                }
+            }));
+        }
+        // Adding the recipe Ingreds
+        if (orderItem.item.ingredients.recipes) {
+            const ingredsFromReceipes = extractIngredsFromRecipeArr(orderItem.item.ingredients.recipes);
+            ingredsFromReceipes.forEach((ingred) => ingredsInThisItem.push(ingred));
+        }
+        // Adding the add option Ingreds
+        if (orderItem.item.chosenOptions?.add && orderItem.item.chosenOptions.add.length > 0) {
+            const addArr = orderItem.item.chosenOptions.add;
+            addArr.forEach((ingred) => ingredsInThisItem.push(ingred));
+        }
+        // Removing Duplicate ingreds and adjusting the quantity of ingreds based on how many time one ingredient is present
+        const duplicateFreeIngreds = removeDuplicateIngredsAndAddQuantity(ingredsInThisItem);
+        // Adding duplicatefree, quantity adjusted ingreds of each item to the allItemIngredStorage
+        duplicateFreeIngreds.forEach(ingred => allItemIngredStorage.push(ingred));
+    });
+    const duplicateFreeAllOrderItemIngreds = removeDuplicateIngredsAndAddQuantity(allItemIngredStorage);
+    const duplicatefreePackagingStorage = removeDuplicatePackaging(allItemPackagingStorage);
+    const ingredsPropertyNamesFixedArray = duplicateFreeAllOrderItemIngreds.map((ingred) => {
+        return {
+            id: ingred.id,
+            ingredientName: ingred.ingredientName,
+            unit: ingred.unitOfStock,
+            quantity: ingred.quantity,
+            costPerUnit: ingred.costPerUnit,
+            caloriePerUnit: ingred.caloriesPerUnit
+        };
+    });
+    const packagingPropertyNamesFixedArray = duplicatefreePackagingStorage.map((packaging) => {
+        return {
+            id: packaging.id,
+            boxName: packaging.boxName,
+            quantity: packaging.quantity,
+            costPerUnit: packaging.costPerUnit
+        };
+    });
+    // Data I will be sending to Inventory
+    const dataForInventory = {
+        restaurantId: fullOrder.restaurantId,
+        orderId: fullOrder._id,
+        orderType: fullOrder.type,
+        ingredientsToReduce: ingredsPropertyNamesFixedArray,
+        deliveryBoxesToReduce: packagingPropertyNamesFixedArray
+    };
+    return dataForInventory;
 }
-// sending the order in MQ
-export async function sendToSkeleton(data) {
-    try {
-        // console.log('before sending to queue');
-        channel = await connection.createChannel();
-        await channel.assertQueue(queue, { durable: false });
-        channel.sendToQueue(queue, Buffer.from(JSON.stringify(data)));
-    }
-    catch (error) {
-        console.log(error);
-    }
-    finally {
-        if (channel)
-            await channel.close();
-    }
+// Extracts Ingredients from an array of Recipes and returns an array of Ingredients
+export function extractIngredsFromRecipeArr(recipeArr) {
+    let ingredsArr = [];
+    recipeArr.forEach((singleRecipe) => {
+        const ingreds = singleRecipe.ingredients;
+        ingreds.forEach((i) => ingredsArr.push(i));
+    });
+    return ingredsArr;
 }
-// Close rabbitmq connection and channel
-export async function closeMQConnection() {
-    try {
-        if (connection)
-            await connection.close();
-    }
-    catch (error) {
-        console.log(error);
-    }
+// Remove duplicate ingredients from an array of ingredients. And increases quantity of ingredient if found duplicate
+export function removeDuplicateIngredsAndAddQuantity(ingredsArray) {
+    const resultIngredArray = [];
+    ingredsArray.forEach(ingred => {
+        const foundIndex = resultIngredArray.findIndex((el) => el.id === ingred.id);
+        if (foundIndex === -1) {
+            resultIngredArray.push(ingred);
+        }
+        else if (foundIndex > -1) {
+            resultIngredArray[foundIndex].quantity = resultIngredArray[foundIndex].quantity + ingred.quantity;
+        }
+    });
+    return resultIngredArray;
+}
+// Remove duplicate packaging
+export function removeDuplicatePackaging(packagingArray) {
+    const resultingArray = [];
+    packagingArray.forEach((singlePackaging) => {
+        const foundIndex = resultingArray.findIndex((el) => el.id === singlePackaging.id);
+        if (foundIndex === -1) {
+            resultingArray.push({ ...singlePackaging, quantity: 1 });
+        }
+        else {
+            const item = resultingArray[foundIndex];
+            if (foundIndex != -1 && item && item.quantity) {
+                item.quantity++;
+            }
+        }
+    });
+    return resultingArray;
 }
 //# sourceMappingURL=order.service.js.map

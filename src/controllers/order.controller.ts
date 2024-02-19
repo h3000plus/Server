@@ -10,12 +10,15 @@ import {
 } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import {
+  prepareDataForInventory,
+  prepareForKDS,
   prepareForRider,
-  prepareForSkeleton,
+
 
 
 } from "../service/order.service.js";
-import { sendOrderToKDS, sendToRider } from "../service/orderMQ.service.js";
+import { sendOrderToKDS, sendToInventory, sendToRider } from "../service/orderMQ.service.js";
+import { IOrderForInventory } from "../interfaces/inventory.interface.js";
 
 // OLD AND UNTOUCHED
 // export const createOrderController = async (
@@ -55,16 +58,19 @@ export const createOrderController = async (
 
     const createdOrder = await createOrder(orderData);
 
-    const detailedOrder = await prepareForSkeleton(createdOrder);
+    const detailedOrder = await prepareForKDS(createdOrder);
+
+    const dataForInventory = await prepareDataForInventory(detailedOrder)
 
     const riderOrder = await prepareForRider(detailedOrder, orderData);
 
     await sendToRider(riderOrder);
-
     await sendOrderToKDS(detailedOrder);
+    await sendToInventory(dataForInventory);
+
 
     res.status(201).json("order Posted");
-    // res.status(201).json(createdOrder);
+
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ error: "Internal Server Error" });

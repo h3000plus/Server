@@ -1,17 +1,19 @@
 import amqp, { Channel, Connection } from "amqplib"
 
-
+// The Connection
 let connection: Connection;
 
+// Queues for KDS, Inventory and Rider
 let marketplaceToKdsQueue = "marketplaceToKDS"
 let marketplaceToInventoryQueue = "marketplaceToInventory";
 let marketplaceToRiderQueue = "marketplaceToRider"
 
+// Channels for KDS, Inventory and Rider
 let channelForKDS: Channel;
 let channelForInventory: Channel;
 let channelForRider: Channel
 
-// Connect and Create rabbit mq channel and connection
+// Connect and Create rabbit mq channel and connection on server startup. This function is being called in index.ts
 export async function connectToMQ() {
     try {
         const ampqServer = "amqps://ujuxbuct:HxHHm8XNtbtohKTPHi30fSdILcP9FhGQ@armadillo.rmq.cloudamqp.com/ujuxbuct"
@@ -21,7 +23,7 @@ export async function connectToMQ() {
     }
 }
 
-// Close rabbitmq connection and channel
+// Close rabbitmq connection and channel. This function is being called in index.ts
 export async function closeMQConnection() {
     try {
         if (connection) await connection.close()
@@ -34,7 +36,8 @@ export async function closeMQConnection() {
 // sending the order in MQ for KDS
 export async function sendOrderToKDS(data: any) {
     try {
-        // console.log('before sending to queue');
+        console.log('before sending to queue - KDS DATA -----------------------------------------------', data);
+        console.log('---------------------------------------------------------');
         channelForKDS = await connection.createChannel();
         await channelForKDS.assertQueue(marketplaceToKdsQueue, { durable: false })
         channelForKDS.sendToQueue(marketplaceToKdsQueue, Buffer.from(JSON.stringify(data)))
@@ -46,16 +49,33 @@ export async function sendOrderToKDS(data: any) {
 
 }
 
-
+// Sending order in MQ for Rider 
 export async function sendToRider(data: any) {
     try {
+        console.log('before sending to queue - RIDER DATA -----------------------------------------------', data);
+        console.log('------------------------------------------------------------------------');
         channelForRider = await connection.createChannel();
         await channelForRider.assertQueue(marketplaceToRiderQueue, { durable: false })
         channelForRider.sendToQueue(marketplaceToRiderQueue, Buffer.from(JSON.stringify(data)))
     } catch (error) {
         console.log(error);
     } finally {
-        if (channelForRider) await channelForKDS.close()
+        if (channelForRider) await channelForRider.close()
+    }
+}
+
+// sending order in MQ for Inventory
+export async function sendToInventory(data: any) {
+    try {
+        console.log('before sending in queue - Inventory Compressed -------------------------------------------------', data);
+        console.log('------------------------------------------------------------------');
+        channelForInventory = await connection.createChannel();
+        await channelForInventory.assertQueue(marketplaceToInventoryQueue, { durable: false })
+        channelForInventory.sendToQueue(marketplaceToInventoryQueue, Buffer.from(JSON.stringify(data)))
+    } catch (error) {
+        console.log(error);
+    } finally {
+        if (channelForInventory) await channelForInventory.close();
     }
 }
 
