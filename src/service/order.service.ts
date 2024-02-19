@@ -2,6 +2,8 @@ import axios from "axios";
 import { IOrder } from "../interfaces/order.interface.js";
 import { IOrderToSend } from "../interfaces/orderToSend.interface.js";
 
+
+
 export const prepareForSkeleton = async (orderData: IOrder) => {
   //   const allMenuItemsWithAdditionalDetails = await getMenuItemsByRestaurant(
   //     orderData.cartItems[0].resId
@@ -31,7 +33,7 @@ export const prepareForSkeleton = async (orderData: IOrder) => {
 
 
 export const prepareForRider = async (fOrder: any, sOrder: any) => {
-  
+
   return {
     _id: fOrder._id,
     riderId: null,
@@ -49,7 +51,7 @@ export const prepareForRider = async (fOrder: any, sOrder: any) => {
     },
     deliveryFee: 5,
     subtotal: sOrder.subtotal,
-    createdAt: sOrder.createdAt 
+    createdAt: sOrder.createdAt
   }
 }
 
@@ -157,23 +159,12 @@ const addDetailsToRestaurants = async (
   };
 };
 
-export const sendToRider = async (preparedOrder: any): Promise<any> => {
-  const res = await axios.post<any>(
-    process.env.RIDER_ORDER as string,
-    preparedOrder,
-  );
+// export const sendToRider = async (preparedOrder: any): Promise<any> => {
+//   const res = await axios.post<any>(
+//     process.env.RIDER_ORDER as string,
+//     preparedOrder,
+//   );
 
-  return res.data;
-};
-
-export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
-  const res = await axios.post<any>(
-    process.env.CREATE_ORDER as string,
-    { order: preparedOrder },
-    { headers: { Authorization: process.env.SKELETON_TOKEN } }
-  );
-
-  return res.data;
-};
-
+//   return res.data;
+// };
 

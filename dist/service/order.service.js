@@ -1,4 +1,5 @@
 import axios from "axios";
+import amqp from "amqplib";
 export const prepareForSkeleton = async (orderData) => {
     //   const allMenuItemsWithAdditionalDetails = await getMenuItemsByRestaurant(
     //     orderData.cartItems[0].resId
@@ -128,8 +129,60 @@ export const sendToRider = async (preparedOrder) => {
     const res = await axios.post(process.env.RIDER_ORDER, preparedOrder);
     return res.data;
 };
-export const sendToSkeleton = async (preparedOrder) => {
-    const res = await axios.post(process.env.CREATE_ORDER, { order: preparedOrder }, { headers: { Authorization: process.env.SKELETON_TOKEN } });
-    return res.data;
-};
+// OLD
+// export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
+//   const res = await axios.post<any>(
+//     process.env.CREATE_ORDER as string,
+//     { order: preparedOrder },
+//     { headers: { Authorization: process.env.SKELETON_TOKEN } }
+//   );
+//   return res.data;
+// };
+// With Rabbit MQ
+// export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
+//   const res = await axios.post<any>(process.env.CREATE_ORDER as string, { order: preparedOrder }, { headers: { Authorization: process.env.SKELETON_TOKEN } });
+//   return res.data;
+// };
+const queue = "marketplaceOrder";
+let connection;
+let channel;
+// Connect and Create rabbit mq channel and connection
+export async function connectAndconsumeMQDataForMarketplaceOrders() {
+    try {
+        const ampqServer = "amqps://ujuxbuct:HxHHm8XNtbtohKTPHi30fSdILcP9FhGQ@armadillo.rmq.cloudamqp.com/ujuxbuct";
+        connection = await amqp.connect(ampqServer);
+        // channel = await connection.createChannel();
+        // await channel.assertQueue(queue, { durable: false })
+        // channel.sendToQueue(queue, Buffer.from(JSON.stringify()))
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+// sending the order in MQ
+export async function sendToSkeleton(data) {
+    try {
+        // console.log('before sending to queue');
+        channel = await connection.createChannel();
+        await channel.assertQueue(queue, { durable: false });
+        channel.sendToQueue(queue, Buffer.from(JSON.stringify(data)));
+    }
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        if (channel)
+            await channel.close();
+    }
+}
+// Close rabbitmq connection and channel
+export async function closeMQConnection() {
+    try {
+        if (connection)
+            await connection.close();
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 //# sourceMappingURL=order.service.js.map

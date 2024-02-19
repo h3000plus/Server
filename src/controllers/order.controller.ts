@@ -12,10 +12,39 @@ import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import {
   prepareForRider,
   prepareForSkeleton,
-  sendToRider,
-  sendToSkeleton,
-} from "../service/order.service.js";
 
+
+} from "../service/order.service.js";
+import { sendOrderToKDS, sendToRider } from "../service/orderMQ.service.js";
+
+// OLD AND UNTOUCHED
+// export const createOrderController = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const orderData = req.body;
+//     orderData.userId = req.body.user.id;
+
+//     const createdOrder = await createOrder(orderData);
+
+//     const detailedOrder = await prepareForSkeleton(createdOrder);
+
+//     const riderOrder = await prepareForRider(detailedOrder, orderData);
+
+//     const riderResponse = await sendToRider(riderOrder);
+
+//     const skeletonResponse = await sendToSkeleton(detailedOrder);
+
+//     res.status(201).json("order Posted");
+//     // res.status(201).json(createdOrder);
+//   } catch (error) {
+//     console.error("Error creating order:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
+// USING MQ
 export const createOrderController = async (
   req: Request,
   res: Response
@@ -30,9 +59,9 @@ export const createOrderController = async (
 
     const riderOrder = await prepareForRider(detailedOrder, orderData);
 
-    const riderResponse = await sendToRider(riderOrder);
+    await sendToRider(riderOrder);
 
-    const skeletonResponse = await sendToSkeleton(detailedOrder);
+    await sendOrderToKDS(detailedOrder);
 
     res.status(201).json("order Posted");
     // res.status(201).json(createdOrder);
