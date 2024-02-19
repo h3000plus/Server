@@ -13,6 +13,7 @@ export interface IOrder {
   delivery: boolean;
   pickup: boolean;
   createdAt: Date;
+  riderId?: string;
 }
 
 export interface ICart {

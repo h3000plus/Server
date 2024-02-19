@@ -101,4 +101,22 @@ export const findAllProcessingOrdersByRestaurantId = async (
   }
 };
 
-
+export const updateRiderId = async (orderId: string, riderId: string) => {
+  try {
+    const newOrder = await orderModel.findByIdAndUpdate(
+      {
+        _id: orderId,
+      },
+      {
+        riderId: riderId,
+      },
+      {
+        new: true,
+      }
+    );
+    return newOrder;
+  } catch (error) {
+    console.error("Error assigning order", error);
+    throw new Error("Internal Server Error");
+  }
+};

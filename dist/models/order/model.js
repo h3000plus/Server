@@ -28,6 +28,7 @@ const orderSchema = new Schema({
     delivery: { type: Boolean, required: true },
     pickup: { type: Boolean, required: true },
     createdAt: { type: Date, required: true },
+    riderId: { type: String, required: false },
 });
 const orderModel = mongoose.model("orders", orderSchema);
 export default orderModel;

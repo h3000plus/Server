@@ -7,6 +7,7 @@ import {
   getOrderByIdController,
   changeOrderStatus,
   getAllProcessingOrdersByRestaurantId,
+  assignRider,
 } from "../controllers/order.controller.js";
 import protectMiddleware from "../middlewares/protect.middleware.js";
 
@@ -20,9 +21,11 @@ router.get(
   "/orders/processing/:restaurantId",
   getAllProcessingOrdersByRestaurantId
 );
+
 router.get("/order-status/:order-id");
 router.get("/order-details/:orderId", getOrderByIdController);
 router.post("/change-order-status", changeOrderStatus);
+router.put("/assign-rider", assignRider);
 
 // schedule order
 router.post(
