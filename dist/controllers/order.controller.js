@@ -1,4 +1,4 @@
-import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, } from "../models/order/query.js";
+import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, updateRiderId, } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import { prepareForRider, prepareForSkeleton, sendToRider, sendToSkeleton, } from "../service/order.service.js";
 export const createOrderController = async (req, res) => {
@@ -98,6 +98,19 @@ export const getAllProcessingOrdersByRestaurantId = async (req, res) => {
         const orders = await findAllProcessingOrdersByRestaurantId(restaurantId);
         res.json({
             orders,
+        });
+    }
+    catch (error) {
+        console.error("Error fetching processing orders:", error);
+        res.status(500).json({ error: error });
+    }
+};
+export const assignRider = async (req, res) => {
+    const { orderId, riderId } = req.body;
+    try {
+        const updatedOrder = await updateRiderId(orderId, riderId);
+        res.json({
+            updatedOrder,
         });
     }
     catch (error) {

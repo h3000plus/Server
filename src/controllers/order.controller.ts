@@ -6,10 +6,10 @@ import {
   getOrderDetails,
   updateStatus,
   findAllProcessingOrdersByRestaurantId,
+  updateRiderId,
 } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import {
-
   prepareForRider,
   prepareForSkeleton,
   sendToRider,
@@ -29,9 +29,9 @@ export const createOrderController = async (
     const detailedOrder = await prepareForSkeleton(createdOrder);
 
     const riderOrder = await prepareForRider(detailedOrder, orderData);
-    
+
     const riderResponse = await sendToRider(riderOrder);
-    
+
     const skeletonResponse = await sendToSkeleton(detailedOrder);
 
     res.status(201).json("order Posted");
@@ -153,6 +153,23 @@ export const getAllProcessingOrdersByRestaurantId = async (
     const orders = await findAllProcessingOrdersByRestaurantId(restaurantId);
     res.json({
       orders,
+    });
+  } catch (error) {
+    console.error("Error fetching processing orders:", error);
+    res.status(500).json({ error: error });
+  }
+};
+
+export const assignRider = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { orderId, riderId } = req.body;
+
+  try {
+    const updatedOrder = await updateRiderId(orderId, riderId);
+    res.json({
+      updatedOrder,
     });
   } catch (error) {
     console.error("Error fetching processing orders:", error);
