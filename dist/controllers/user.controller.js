@@ -10,6 +10,7 @@ const signupController = async (req, res) => {
            password: hashedPassword,
          };
          const user = await createUser(userObject); */
+        console.log('incoming data from fe', req.body);
         const user = await createUser(req.body);
         res.status(201).json({
             message: "added",
@@ -92,7 +93,7 @@ const postManyCustomers = async (req, res) => {
 };
 const getUserDetailsByIdController = async (req, res) => {
     try {
-        console.log(req.params.id);
+        console.log('from inside controller', req.params.id);
         const id = req.params.id; // Access params using square brackets for keys containing hyphens
         const userDetails = await getUserDetails(id);
         res.status(200).json(userDetails);
