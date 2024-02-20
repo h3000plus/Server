@@ -16,7 +16,7 @@ let channelForRider: Channel
 // Connect and Create rabbit mq channel and connection on server startup. This function is being called in index.ts
 export async function connectToMQ() {
     try {
-        const ampqServer = "amqps://ujuxbuct:HxHHm8XNtbtohKTPHi30fSdILcP9FhGQ@armadillo.rmq.cloudamqp.com/ujuxbuct"
+        const ampqServer = (process.env.AMPQ_URL) as string
         connection = await amqp.connect(ampqServer)
     } catch (err) {
         console.log(err);
@@ -36,7 +36,7 @@ export async function closeMQConnection() {
 // sending the order in MQ for KDS
 export async function sendOrderToKDS(data: any) {
     try {
-        console.log('before sending to queue - KDS DATA -----------------------------------------------', data);
+        console.log('before sending to KDS - KDS DATA -----------------------------------------------', data);
         console.log('---------------------------------------------------------');
         channelForKDS = await connection.createChannel();
         await channelForKDS.assertQueue(marketplaceToKdsQueue, { durable: false })
@@ -52,7 +52,7 @@ export async function sendOrderToKDS(data: any) {
 // Sending order in MQ for Rider 
 export async function sendToRider(data: any) {
     try {
-        console.log('before sending to queue - RIDER DATA -----------------------------------------------', data);
+        console.log('before sending to RIDER - RIDER DATA -----------------------------------------------', data);
         console.log('------------------------------------------------------------------------');
         channelForRider = await connection.createChannel();
         await channelForRider.assertQueue(marketplaceToRiderQueue, { durable: false })
@@ -67,7 +67,7 @@ export async function sendToRider(data: any) {
 // sending order in MQ for Inventory
 export async function sendToInventory(data: any) {
     try {
-        console.log('before sending in queue - Inventory Compressed -------------------------------------------------', data);
+        console.log('before sending in INVENTORY - Inventory Compressed -------------------------------------------------', data);
         console.log('------------------------------------------------------------------');
         channelForInventory = await connection.createChannel();
         await channelForInventory.assertQueue(marketplaceToInventoryQueue, { durable: false })
