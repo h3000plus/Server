@@ -16,8 +16,8 @@ let channelForRider: Channel
 // Connect and Create rabbit mq channel and connection on server startup. This function is being called in index.ts
 export async function connectToMQ() {
     try {
-        const ampqServer = (process.env.AMPQ_URL) as string
-        connection = await amqp.connect(ampqServer)
+        const amqpServer = (process.env.AMQP_URL) as string
+        connection = await amqp.connect(amqpServer)
     } catch (err) {
         console.log(err);
     }
