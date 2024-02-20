@@ -22,6 +22,7 @@ const CustomerPreference = new Schema({
 //   floor: { type: String, required: true },
 // })
 const CustomerSchema = new Schema({
+    email: { type: String, required: true },
     name: { type: String, required: false },
     dob: { type: Date, required: true },
     age: { type: Number, required: false },
