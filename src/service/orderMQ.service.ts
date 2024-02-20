@@ -36,11 +36,10 @@ export async function closeMQConnection() {
 // sending the order in MQ for KDS
 export async function sendOrderToKDS(data: any) {
     try {
-        console.log('before sending to KDS - KDS DATA -----------------------------------------------', data);
-        console.log('---------------------------------------------------------');
         channelForKDS = await connection.createChannel();
         await channelForKDS.assertQueue(marketplaceToKdsQueue, { durable: false })
         channelForKDS.sendToQueue(marketplaceToKdsQueue, Buffer.from(JSON.stringify(data)))
+        console.log('Data Sent In KDS Queue Successfully', data);
     } catch (error) {
         console.log(error);
     } finally {
@@ -52,11 +51,10 @@ export async function sendOrderToKDS(data: any) {
 // Sending order in MQ for Rider 
 export async function sendToRider(data: any) {
     try {
-        console.log('before sending to RIDER - RIDER DATA -----------------------------------------------', data);
-        console.log('------------------------------------------------------------------------');
         channelForRider = await connection.createChannel();
         await channelForRider.assertQueue(marketplaceToRiderQueue, { durable: false })
         channelForRider.sendToQueue(marketplaceToRiderQueue, Buffer.from(JSON.stringify(data)))
+        console.log('Data Sent In RIDER Queue Successfully', data);
     } catch (error) {
         console.log(error);
     } finally {
@@ -67,11 +65,10 @@ export async function sendToRider(data: any) {
 // sending order in MQ for Inventory
 export async function sendToInventory(data: any) {
     try {
-        console.log('before sending in INVENTORY - Inventory Compressed -------------------------------------------------', data);
-        console.log('------------------------------------------------------------------');
         channelForInventory = await connection.createChannel();
         await channelForInventory.assertQueue(marketplaceToInventoryQueue, { durable: false })
         channelForInventory.sendToQueue(marketplaceToInventoryQueue, Buffer.from(JSON.stringify(data)))
+        console.log('Data Sent In INVENTORY Queue Successfully', data);
     } catch (error) {
         console.log(error);
     } finally {
