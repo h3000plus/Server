@@ -1,18 +1,40 @@
-import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, } from "../models/order/query.js";
+import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, updateRiderId, } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
-import { prepareForRider, prepareForSkeleton, sendToRider, sendToSkeleton, } from "../service/order.service.js";
+import { prepareDataForInventory, prepareForKDS, prepareForRider, } from "../service/order.service.js";
+import { sendOrderToKDS, sendToInventory, sendToRider } from "../service/orderMQ.service.js";
+// OLD AND UNTOUCHED
+// export const createOrderController = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const orderData = req.body;
+//     orderData.userId = req.body.user.id;
+//     const createdOrder = await createOrder(orderData);
+//     const detailedOrder = await prepareForSkeleton(createdOrder);
+//     const riderOrder = await prepareForRider(detailedOrder, orderData);
+//     const riderResponse = await sendToRider(riderOrder);
+//     const skeletonResponse = await sendToSkeleton(detailedOrder);
+//     res.status(201).json("order Posted");
+//     // res.status(201).json(createdOrder);
+//   } catch (error) {
+//     console.error("Error creating order:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+// USING MQ
 export const createOrderController = async (req, res) => {
     try {
         const orderData = req.body;
         orderData.userId = req.body.user.id;
         const createdOrder = await createOrder(orderData);
-        const detailedOrder = await prepareForSkeleton(createdOrder);
+        const detailedOrder = await prepareForKDS(createdOrder);
+        const dataForInventory = await prepareDataForInventory(detailedOrder);
         const riderOrder = await prepareForRider(detailedOrder, orderData);
-        console.log('riderOrder', riderOrder);
-        const riderResponse = await sendToRider(riderOrder);
-        const skeletonResponse = await sendToSkeleton(detailedOrder);
+        await sendToRider(riderOrder);
+        await sendOrderToKDS(detailedOrder);
+        await sendToInventory(dataForInventory);
         res.status(201).json("order Posted");
-        // res.status(201).json(createdOrder);
     }
     catch (error) {
         console.error("Error creating order:", error);
@@ -99,6 +121,19 @@ export const getAllProcessingOrdersByRestaurantId = async (req, res) => {
         const orders = await findAllProcessingOrdersByRestaurantId(restaurantId);
         res.json({
             orders,
+        });
+    }
+    catch (error) {
+        console.error("Error fetching processing orders:", error);
+        res.status(500).json({ error: error });
+    }
+};
+export const assignRider = async (req, res) => {
+    const { orderId, riderId } = req.body;
+    try {
+        const updatedOrder = await updateRiderId(orderId, riderId);
+        res.json({
+            updatedOrder,
         });
     }
     catch (error) {

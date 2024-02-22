@@ -35,6 +35,7 @@ const CustomerPreference = new Schema<ICustomerPreference>({
 // })
 
 const CustomerSchema = new Schema<ICustomer>({
+  email: { type: String, required: true },
   name: { type: String, required: false },
   dob: { type: Date, required: true },
   age: { type: Number, required: false },

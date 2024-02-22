@@ -1,8 +1,11 @@
 import axios from "axios";
 import { IOrder } from "../interfaces/order.interface.js";
 import { IOrderToSend } from "../interfaces/orderToSend.interface.js";
+import { IIngredientForInventory, IOrderForInventory, IPackingForInventory, IRecipeForInventory } from "../interfaces/inventory.interface.js";
 
-export const prepareForSkeleton = async (orderData: IOrder) => {
+
+
+export const prepareForKDS = async (orderData: IOrder) => {
   //   const allMenuItemsWithAdditionalDetails = await getMenuItemsByRestaurant(
   //     orderData.cartItems[0].resId
   //   );
@@ -31,7 +34,7 @@ export const prepareForSkeleton = async (orderData: IOrder) => {
 
 
 export const prepareForRider = async (fOrder: any, sOrder: any) => {
-  
+
   return {
     _id: fOrder._id,
     riderId: null,
@@ -46,7 +49,7 @@ export const prepareForRider = async (fOrder: any, sOrder: any) => {
     },
     deliveryFee: 5,
     subtotal: sOrder.subtotal,
-    createdAt: sOrder.createdAt 
+    createdAt: sOrder.createdAt
   }
 }
 
@@ -154,26 +157,137 @@ const addDetailsToRestaurants = async (
   };
 };
 
-export const sendToRider = async (preparedOrder: any): Promise<any> => {
-  const res = await axios.post<any>(
-    // process.env.RIDER_ORDER as string,
-    'http://localhost:5000/order/orderDetails',
-    preparedOrder,
-  );
 
-  console.log("Response from rider server", res.data);
+// -------------------------------------------------------------------------------------------
 
-  return res.data;
-};
+// Prepare data for Inventory
+export function prepareDataForInventory(fullOrder: IOrderForInventory | any) {
 
-export const sendToSkeleton = async (preparedOrder: any): Promise<any> => {
-  const res = await axios.post<any>(
-    process.env.CREATE_ORDER as string,
-    { order: preparedOrder },
-    { headers: { Authorization: process.env.SKELETON_TOKEN } }
-  );
+  const itemsArray = fullOrder.items;
 
-  return res.data;
-};
+  const allItemIngredStorage: IIngredientForInventory[] = [];
+
+  const allItemPackagingStorage: IPackingForInventory[] = []
+
+  itemsArray?.forEach((orderItem: any) => {
+
+    allItemPackagingStorage.push(orderItem.item.itemPackingType[0])
+
+    const ingredsInThisItem: IIngredientForInventory[] = [...orderItem.item.ingredients.rawIngredients];
+
+    // Deleting the No Ingreds
+    if (orderItem.item.chosenOptions && orderItem.item.chosenOptions.no.length > 0) {
+      const noIngreds = orderItem.item.chosenOptions?.no;
+      noIngreds.forEach(((singleNoIngred: any) => {
+        const foundIndex = ingredsInThisItem.findIndex((i) => i.id === singleNoIngred.id)
+        if (foundIndex != -1) {
+          ingredsInThisItem.splice(foundIndex, 1)
+        }
+      }))
+    }
+
+    // Adding the recipe Ingreds
+    if (orderItem.item.ingredients.recipes) {
+      const ingredsFromReceipes: IIngredientForInventory[] = extractIngredsFromRecipeArr(orderItem.item.ingredients.recipes)
+      ingredsFromReceipes.forEach((ingred) => ingredsInThisItem.push(ingred))
+    }
+
+    // Adding the add option Ingreds
+    if (orderItem.item.chosenOptions?.add && orderItem.item.chosenOptions.add.length > 0) {
+      const addArr = orderItem.item.chosenOptions.add
+      addArr.forEach((ingred: any) => ingredsInThisItem.push(ingred))
+    }
+
+    // Removing Duplicate ingreds and adjusting the quantity of ingreds based on how many time one ingredient is present
+    const duplicateFreeIngreds = removeDuplicateIngredsAndAddQuantity(ingredsInThisItem);
+
+    // Adding duplicatefree, quantity adjusted ingreds of each item to the allItemIngredStorage
+    duplicateFreeIngreds.forEach(ingred => allItemIngredStorage.push(ingred))
+
+  })
 
 
+  const duplicateFreeAllOrderItemIngreds = removeDuplicateIngredsAndAddQuantity(allItemIngredStorage);
+
+  const duplicatefreePackagingStorage = removeDuplicatePackaging(allItemPackagingStorage)
+
+  const ingredsPropertyNamesFixedArray = duplicateFreeAllOrderItemIngreds.map((ingred) => {
+    return {
+      id: ingred.id,
+      ingredientName: ingred.ingredientName,
+      unit: ingred.unitOfStock,
+      quantity: ingred.quantity,
+      costPerUnit: ingred.costPerUnit,
+      caloriePerUnit: ingred.caloriesPerUnit
+    }
+  })
+
+  const packagingPropertyNamesFixedArray = duplicatefreePackagingStorage.map((packaging) => {
+    return {
+      id: packaging.id,
+      boxName: packaging.boxName,
+      quantity: packaging.quantity,
+      costPerUnit: packaging.costPerUnit
+
+    }
+  })
+
+  // Data I will be sending to Inventory
+  const dataForInventory = {
+    restaurantId: fullOrder.restaurantId,
+    orderId: fullOrder._id,
+    orderType: fullOrder.type,
+    ingredientsToReduce: ingredsPropertyNamesFixedArray,
+    deliveryBoxesToReduce: packagingPropertyNamesFixedArray
+  }
+
+  return dataForInventory
+}
+
+
+// Extracts Ingredients from an array of Recipes and returns an array of Ingredients
+export function extractIngredsFromRecipeArr(recipeArr: IRecipeForInventory[]): IIngredientForInventory[] {
+  let ingredsArr: IIngredientForInventory[] = []
+  recipeArr.forEach((singleRecipe) => {
+    const ingreds = singleRecipe.ingredients
+    ingreds.forEach((i) => ingredsArr.push(i))
+  });
+  return ingredsArr;
+}
+
+// Remove duplicate ingredients from an array of ingredients. And increases quantity of ingredient if found duplicate
+export function removeDuplicateIngredsAndAddQuantity(ingredsArray: IIngredientForInventory[]): IIngredientForInventory[] {
+  const resultIngredArray: IIngredientForInventory[] = [];
+  ingredsArray.forEach(ingred => {
+    const foundIndex = resultIngredArray.findIndex((el) => el.id === ingred.id)
+    if (foundIndex === -1) {
+      resultIngredArray.push(ingred)
+    }
+    else if (foundIndex > -1) {
+      resultIngredArray[foundIndex].quantity = resultIngredArray[foundIndex].quantity + ingred.quantity
+    }
+  });
+
+  return resultIngredArray
+}
+
+
+// Remove duplicate packaging
+export function removeDuplicatePackaging(packagingArray: IPackingForInventory[]) {
+  const resultingArray: IPackingForInventory[] = []
+
+  packagingArray.forEach((singlePackaging) => {
+    const foundIndex = resultingArray.findIndex((el) => el.id === singlePackaging.id)
+    if (foundIndex === -1) {
+      resultingArray.push({ ...singlePackaging, quantity: 1 })
+    }
+    else {
+      const item = resultingArray[foundIndex];
+      if (foundIndex != -1 && item && item.quantity) {
+        item.quantity++;
+      }
+    }
+  });
+
+  return resultingArray;
+}

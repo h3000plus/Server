@@ -85,4 +85,20 @@ export const findAllProcessingOrdersByRestaurantId = async (restaurandId) => {
         throw new Error("Internal Server Error");
     }
 };
+export const updateRiderId = async (orderId, riderId) => {
+    try {
+        const newOrder = await orderModel.findByIdAndUpdate({
+            _id: orderId,
+        }, {
+            riderId: riderId,
+        }, {
+            new: true,
+        });
+        return newOrder;
+    }
+    catch (error) {
+        console.error("Error assigning order", error);
+        throw new Error("Internal Server Error");
+    }
+};
 //# sourceMappingURL=query.js.map

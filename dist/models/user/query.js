@@ -23,7 +23,9 @@ const findUserById = async (id) => {
 const createUser = async (userObject) => {
     try {
         const { email, address, password, customerPreference, currentLatLong, dob } = userObject;
+        console.log("");
         const user = await Customer.create({ email, address, password, customerPreference, currentLatLong, dob });
+        console.log('user created', user);
         return user;
     }
     catch (error) {
@@ -34,6 +36,7 @@ const createUser = async (userObject) => {
 const isEmailExists = async (email) => {
     try {
         const existingUser = await Customer.findOne({ email });
+        console.log('email here', email);
         // console.log(existingUser);
         if (existingUser) {
             return true;
@@ -92,6 +95,7 @@ async function updateTastyTagsScoreInDB(itemsArray, userId) {
 }
 const getUserDetails = async (id) => {
     try {
+        console.log('before getting from db', id);
         const userDetails = await Customer.findById(id); // Assuming User model has a method to find user by ID
         if (!userDetails) {
             throw new Error('User not found');
