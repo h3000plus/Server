@@ -29,7 +29,7 @@ export const createOrderController = async (
     const detailedOrder = await prepareForSkeleton(createdOrder);
 
     const riderOrder = await prepareForRider(detailedOrder, orderData);
-    
+    console.log('riderOrder',riderOrder)
     const riderResponse = await sendToRider(riderOrder);
     
     const skeletonResponse = await sendToSkeleton(detailedOrder);

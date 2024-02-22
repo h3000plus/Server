@@ -180,3 +180,55 @@ export async function getItemDetails(id: string) {
 
   // return data;
 }
+
+
+
+export async function recommendedEngine(user: any) {
+  
+    interface TastyTags {
+      [key: string]: number;
+    }
+    
+    interface CurrentLatLong {
+      longitude: number;
+      latitude: number;
+    }
+    
+    interface CustomerPreference {
+      tastyTags: string[];
+      category: string; // Assuming category is a string
+    }
+    
+    interface UserDetails {
+      _id: string;
+      currentLatLong: CurrentLatLong;
+      customerPreference: CustomerPreference;
+    }
+    
+    const data: TastyTags = user.customerPreference.tastyTags;
+    const sortedArray = Object.entries(data);
+    sortedArray.sort((a, b) => b[1] - a[1]);
+    const sortedObject = Object.fromEntries(sortedArray);
+    const keysArray = Object.keys(sortedObject).slice(0, 3);
+
+    const userDetails: UserDetails = {
+      _id: user.id,
+      currentLatLong: {
+        longitude: user.currentLatLong.longitude,
+        latitude: user.currentLatLong.latitude,
+      },
+      customerPreference: {
+        tastyTags: keysArray,
+        category: user.customerPreference.category
+      }
+    };
+    console.log(userDetails)
+    const response = await axios.post<any>(
+     "https://bento-recommender.onrender.com/get-all-restaurants",
+      userDetails,
+    );
+
+    console.log('response is: ', response);
+
+    return response.data;
+}

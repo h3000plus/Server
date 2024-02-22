@@ -8,6 +8,7 @@ export const createOrderController = async (req, res) => {
         const createdOrder = await createOrder(orderData);
         const detailedOrder = await prepareForSkeleton(createdOrder);
         const riderOrder = await prepareForRider(detailedOrder, orderData);
+        console.log('riderOrder', riderOrder);
         const riderResponse = await sendToRider(riderOrder);
         const skeletonResponse = await sendToSkeleton(detailedOrder);
         res.status(201).json("order Posted");

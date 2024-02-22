@@ -8,6 +8,7 @@ import itemRouter from './routers/item.router.js';
 import orderRouter from './routers/order.router.js';
 import restaurantRouter from './routers/restaurant.router.js';
 import cuisineRouter from './routers/category.router.js';
+import recommendedEngine from './routers/recommended.engine.router.js';
 config();
 // connect ot MongoDB database
 // const dbUri: string = config.DB_URI
@@ -17,16 +18,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
-// app.get('/one-user/:email', async (req, res) => {
-//     const email = req.params.email
-//     const user = await Customer.find({ email })
-//     res.send(user)
-// })
 app.use(userRouter);
 app.use(restaurantRouter);
 app.use(itemRouter);
 app.use(orderRouter);
 app.use(cuisineRouter);
+app.use(recommendedEngine);
 app.get('/', (req, res) => {
     res.status(200).send('Hello World!');
 });

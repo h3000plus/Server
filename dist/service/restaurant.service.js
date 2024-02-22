@@ -136,4 +136,26 @@ export async function getItemDetails(id) {
     // console.log(data);
     // return data;
 }
+export async function recommendedEngine(user) {
+    const data = user.customerPreference.tastyTags;
+    const sortedArray = Object.entries(data);
+    sortedArray.sort((a, b) => b[1] - a[1]);
+    const sortedObject = Object.fromEntries(sortedArray);
+    const keysArray = Object.keys(sortedObject).slice(0, 3);
+    const userDetails = {
+        _id: user.id,
+        currentLatLong: {
+            longitude: user.currentLatLong.longitude,
+            latitude: user.currentLatLong.latitude,
+        },
+        customerPreference: {
+            tastyTags: keysArray,
+            category: user.customerPreference.category
+        }
+    };
+    console.log(userDetails);
+    const response = await axios.post("https://bento-recommender.onrender.com/get-all-restaurants", userDetails);
+    console.log('response is: ', response);
+    return response.data;
+}
 //# sourceMappingURL=restaurant.service.js.map

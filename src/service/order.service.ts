@@ -36,13 +36,10 @@ export const prepareForRider = async (fOrder: any, sOrder: any) => {
     _id: fOrder._id,
     riderId: null,
     userId: sOrder.userId,
+    // userId: "65cb1244bcf523adff87da56",
     restaurantId: fOrder.restaurantId,
     items: fOrder.items,
     orderTemperatureType: 'Hot',
-    deliveryPoint: {
-      longitude: 53.515333,
-      latitude: -6.190796
-    },
     orderDeliveryTime: {
       minTime: calculateDeliveryTime(fOrder)[0],
       maxTime: calculateDeliveryTime(fOrder)[1]
@@ -159,9 +156,12 @@ const addDetailsToRestaurants = async (
 
 export const sendToRider = async (preparedOrder: any): Promise<any> => {
   const res = await axios.post<any>(
-    process.env.RIDER_ORDER as string,
+    // process.env.RIDER_ORDER as string,
+    'http://localhost:5000/order/orderDetails',
     preparedOrder,
   );
+
+  console.log("Response from rider server", res.data);
 
   return res.data;
 };

@@ -9,6 +9,7 @@ import orderRouter from './routers/order.router.js';
 import restaurantRouter from './routers/restaurant.router.js'
 import cuisineRouter from './routers/category.router.js';
 import Customer from './models/user/model.js';
+import recommendedEngine from './routers/recommended.engine.router.js'
 
 config();
 
@@ -30,7 +31,7 @@ app.use(restaurantRouter);
 app.use(itemRouter);
 app.use(orderRouter);
 app.use(cuisineRouter);
-
+app.use(recommendedEngine);
 
 app.get('/', (req, res) => {
     res.status(200).send('Hello World!');
