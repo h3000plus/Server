@@ -155,7 +155,31 @@ export async function recommendedEngine(user) {
     };
     console.log(userDetails);
     const response = await axios.post("https://bento-recommender.onrender.com/get-all-restaurants", userDetails);
-    console.log('response is: ', response);
+    // console.log('response is: ', response);
     return response.data;
+}
+export async function restaurantsMatching(restaurants) {
+    try {
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: process.env.SKELETON_TOKEN, // Assuming SKELETON_TOKEN is a string
+        };
+        const response = await axios.get("https://sak-skeleton-samiya-kazi.koyeb.app/marketplace/restaurants?limit=0", { headers });
+        // console.log(restaurants)
+        // console.log(response.data)
+        const matchedRestaurants = findObjectsWithProperty(response.data, restaurants);
+        // console.log(matchedRestaurants)
+        return matchedRestaurants;
+    }
+    catch (error) {
+        console.error("Error fetching or matching restaurants:", error);
+        throw error; // Re-throwing error for handling in higher layers
+    }
+}
+function findObjectsWithProperty(resArr1, resArr2) {
+    const matchingIds = new Set(resArr2.map(restaurant => restaurant.restaurantId));
+    const restaurants = resArr1.filter(restaurant => matchingIds.has(restaurant.restaurantId));
+    console.log(matchingIds);
+    return restaurants;
 }
 //# sourceMappingURL=restaurant.service.js.map

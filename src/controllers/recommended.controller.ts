@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getUserDetails } from '../models/user/query.js';
-import { recommendedEngine } from '../service/restaurant.service.js';
+import { recommendedEngine, restaurantsMatching } from '../service/restaurant.service.js';
 
 export const getRecommendedRestaurantsController = async (
   req: Request,
@@ -10,8 +10,9 @@ export const getRecommendedRestaurantsController = async (
     const id = req.body.user.id;
     const user = await getUserDetails(id);
     const recommended = await recommendedEngine(user);
-    console.log(recommended)
-    res.send(recommended);
+    const prepareForFronted = await restaurantsMatching(recommended)
+    // console.log(prepareForFronted)
+    res.send(prepareForFronted);
   } catch (error) {
     console.error("Controller Error:", error);
     res.status(500).json({ error: "Internal Server Error" });

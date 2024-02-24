@@ -228,7 +228,108 @@ export async function recommendedEngine(user: any) {
       userDetails,
     );
 
-    console.log('response is: ', response);
+    // console.log('response is: ', response);
 
     return response.data;
+}
+
+
+interface Restaurant1Info {
+  _id: string;
+  address: string;
+  allAmbianceImages: string[];
+  restaurantCoverPhoto: string;
+  currency: string;
+  restaurantDetails: string;
+  restaurantLatitude: number;
+  restaurantLongitude: number;
+  rating: number;
+  priceRange: string;
+  restaurantId: number;
+  restaurantName: string;
+  country: {
+      countryCode: string;
+      countryName: string;
+      zoneName: string;
+      gmtOffset: number;
+      timestamp: number;
+  };
+  halal: boolean;
+  billPerClient: number;
+  website: string;
+  restaurantPhone: string;
+  veganFriendly: boolean;
+  sellsAlcohol: boolean;
+  monthlyOrders: string;
+  restaurantLogo: string;
+  typeOfRestaurant: string;
+  kidsZone: boolean;
+  delivery: boolean;
+  deliveryTimeStart: string;
+  deliveryTimeEnd: string;
+  minimumDeliveryAmount: number;
+  maximumDeliveryRange: number;
+  pickup: boolean;
+  pickupTimeStart: string;
+  pickupTimeEnd: string;
+  operationOpeningTime: string;
+  operationClosingTime: string;
+  breakfastStart: string;
+  breakfastEnd: string;
+  lunchStart: string;
+  lunchEnd: string;
+  dinnerStart: string;
+  dinnerEnd: string;
+  dineInTimeStart: string;
+  dineInTimeEnd: string;
+  operatingDays: string[];
+  cuisines: string[];
+  orderServingMethod: string;
+  doesOperateOnHolidays: boolean;
+  maximumWaiterNumber: number;
+  maximumChefNumber: number;
+  maximumDinningCapacity: number;
+  dinningAreaSqFeet: number;
+  kitchenAreaSqFeet: number;
+  bankName: string;
+  bankAccountHolder: string;
+  bankAccountNumber: number;
+  bankAccountRoutingNumber: number;
+  __v: number;
+}
+
+interface Restaurant2Info {
+  restaurantId: number;
+  name: string;
+  rating: number;
+}
+
+
+export async function restaurantsMatching(restaurants: any) {
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: process.env.SKELETON_TOKEN as string, // Assuming SKELETON_TOKEN is a string
+    };
+    const response = await axios.get(
+      "https://sak-skeleton-samiya-kazi.koyeb.app/marketplace/restaurants?limit=0",
+      { headers }
+    );
+    // console.log(restaurants)
+    // console.log(response.data)
+    const matchedRestaurants = findObjectsWithProperty(response.data, restaurants);
+    // console.log(matchedRestaurants)
+    return matchedRestaurants;
+  } catch (error) {
+    console.error("Error fetching or matching restaurants:", error);
+    throw error; // Re-throwing error for handling in higher layers
+  }
+}
+
+
+function findObjectsWithProperty(resArr1: Restaurant1Info[], resArr2: Restaurant2Info[]): Restaurant1Info[] {
+  const matchingIds = new Set(resArr2.map(restaurant => restaurant.restaurantId));
+  const restaurants = resArr1.filter(restaurant => matchingIds.has(restaurant.restaurantId));
+  console.log(matchingIds)
+  return restaurants;
 }

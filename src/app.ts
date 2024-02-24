@@ -45,6 +45,7 @@ async function main() {
 
         // Start consuming message from RabbitMQ
         await connectToMQ()
+        console.log('MQ Connected')
 
         app.listen(port, () => {
             console.log(`App is listening on port ${port}`);
