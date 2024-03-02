@@ -92,7 +92,7 @@ export const findAllProcessingOrdersByRestaurantId = async (
 ): Promise<IOrder[]> => {
   try {
     const orders = await orderModel
-      .find({ restaurantId: restaurandId, orderStatus: { $ne: "completed" } })
+      .find({ restaurantId: restaurandId})
       .exec();
     return orders;
   } catch (error) {

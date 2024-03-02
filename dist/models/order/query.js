@@ -76,7 +76,7 @@ export const updateStatus = async (_id, orderStatus) => {
 export const findAllProcessingOrdersByRestaurantId = async (restaurandId) => {
     try {
         const orders = await orderModel
-            .find({ restaurantId: restaurandId, orderStatus: { $ne: "completed" } })
+            .find({ restaurantId: restaurandId })
             .exec();
         return orders;
     }
