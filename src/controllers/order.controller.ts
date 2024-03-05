@@ -7,6 +7,7 @@ import {
   updateStatus,
   findAllProcessingOrdersByRestaurantId,
   updateRiderId,
+  updateOrderStatus,
 } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import {
@@ -19,6 +20,8 @@ import {
 } from "../service/order.service.js";
 import { sendOrderToKDS, sendToInventory, sendToRider } from "../service/orderMQ.service.js";
 import { IOrderForInventory } from "../interfaces/inventory.interface.js";
+import { IOrder } from "../interfaces/order.interface.js";
+// import { io } from "../app.js";
 
 // OLD AND UNTOUCHED
 // export const createOrderController = async (
@@ -92,6 +95,19 @@ export const createScheduleOrderController = async (
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const getOrderUserId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try{
+    res.json(req.body.user.id);
+  } catch (error) {
+    console.error("Controller Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+  
+}
 
 export const getAllCompletedOrders = async (
   req: Request,
@@ -211,3 +227,27 @@ export const assignRider = async (
     res.status(500).json({ error: error });
   }
 };
+
+
+export const updateOrderStatusByOrderId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { orderId } = req.params;
+  const { orderStatus } = req.body;
+
+  try {
+    const updatedOrder = await updateOrderStatus(orderId, orderStatus) as IOrder;
+
+    if (updatedOrder) {
+      const io = res.locals.io;
+      io.to(updatedOrder.userId).emit('order-status-change', updatedOrder);
+      res.status(200).json(updatedOrder.orderStatus);
+    } else {
+      res.status(404).json({ success: false, error: 'Order not found' });
+    }
+  } catch (error) {
+    console.error("Error fetching processing orders:", error);
+    res.status(500).json({ error: error });
+  }
+}

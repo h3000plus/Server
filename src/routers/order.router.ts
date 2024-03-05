@@ -8,6 +8,8 @@ import {
   changeOrderStatus,
   getAllProcessingOrdersByRestaurantId,
   assignRider,
+  updateOrderStatusByOrderId,
+  getOrderUserId,
 } from "../controllers/order.controller.js";
 import protectMiddleware from "../middlewares/protect.middleware.js";
 
@@ -21,8 +23,8 @@ router.get(
   "/orders/processing/:restaurantId",
   getAllProcessingOrdersByRestaurantId
 );
-
-router.get("/order-status/:order-id");
+router.get("/order-user-id", protectMiddleware, getOrderUserId);
+router.put("/order-status/:orderId", updateOrderStatusByOrderId);
 router.get("/order-details/:orderId", getOrderByIdController);
 router.post("/change-order-status", changeOrderStatus);
 router.put("/assign-rider", assignRider);

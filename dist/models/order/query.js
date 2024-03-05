@@ -101,4 +101,17 @@ export const updateRiderId = async (orderId, riderId) => {
         throw new Error("Internal Server Error");
     }
 };
+export const updateOrderStatus = async (orderId, orderStatus) => {
+    try {
+        const order = await orderModel.findOne({ _id: orderId });
+        if (!order) {
+            throw new Error('Order not found');
+        }
+        const updatedOrder = await orderModel.findByIdAndUpdate(order._id, { orderStatus }, { new: true });
+        return updatedOrder;
+    }
+    catch (error) {
+        throw new Error('Error updating order status: ' + error);
+    }
+};
 //# sourceMappingURL=query.js.map

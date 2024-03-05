@@ -1,7 +1,8 @@
-import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, updateRiderId, } from "../models/order/query.js";
+import { createOrder, getAllCompletedOrdersByUserId, getAllProcessingOrdersByUserId, getOrderDetails, updateStatus, findAllProcessingOrdersByRestaurantId, updateRiderId, updateOrderStatus, } from "../models/order/query.js";
 import { createScheduleOrder } from "../models/scheduleOrder/query.js";
 import { prepareDataForInventory, prepareForKDS, prepareForRider, } from "../service/order.service.js";
 import { sendOrderToKDS, sendToInventory, sendToRider } from "../service/orderMQ.service.js";
+// import { io } from "../app.js";
 // OLD AND UNTOUCHED
 // export const createOrderController = async (
 //   req: Request,
@@ -50,6 +51,15 @@ export const createScheduleOrderController = async (req, res) => {
     }
     catch (error) {
         console.error("Error creating order:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+export const getOrderUserId = async (req, res) => {
+    try {
+        res.json(req.body.user.id);
+    }
+    catch (error) {
+        console.error("Controller Error:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -135,6 +145,25 @@ export const assignRider = async (req, res) => {
         res.json({
             updatedOrder,
         });
+    }
+    catch (error) {
+        console.error("Error fetching processing orders:", error);
+        res.status(500).json({ error: error });
+    }
+};
+export const updateOrderStatusByOrderId = async (req, res) => {
+    const { orderId } = req.params;
+    const { orderStatus } = req.body;
+    try {
+        const updatedOrder = await updateOrderStatus(orderId, orderStatus);
+        if (updatedOrder) {
+            const io = res.locals.io;
+            io.to(updatedOrder.userId).emit('order-status-change', updatedOrder);
+            res.status(200).json(updatedOrder.orderStatus);
+        }
+        else {
+            res.status(404).json({ success: false, error: 'Order not found' });
+        }
     }
     catch (error) {
         console.error("Error fetching processing orders:", error);
