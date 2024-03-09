@@ -24,6 +24,7 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
                 resPriceRange: res.priceRange
             };
         });
+        console.log(restaurants);
         return restaurants;
     }
     catch (error) {
@@ -57,7 +58,12 @@ export async function getMenuItemsByRestaurant(id) {
     const response = await axios.get(`${process.env.MENU_ITEMS}${id}`, {
         headers,
     });
+    const discount = await axios.get(`${process.env.RES_DISCOUNT}${id}`, {
+        headers,
+    });
     const data = response.data;
+    const discountPrice = discount.data.marketplaceDiscountPercentage;
+    console.log(discountPrice);
     const categories = [];
     const items = { all: [] };
     for (const item of data) {
@@ -66,11 +72,13 @@ export async function getMenuItemsByRestaurant(id) {
             categories.push(catg);
             items[catg] = [];
         }
+        const discoutPrc = item.item.itemPrice - (discountPrice / 100 * item.item.itemPrice) + "";
         // items['all'].push(item);
         items["all"].push({
             _id: item._id,
             name: item.item.itemName,
-            price: item.item.itemPrice,
+            price: discoutPrc,
+            originalPrice: item.item.itemPrice,
             description: item.item.itemDescription?.slice(0, 9),
             categoryName: item.categoryName,
             image: item.item.itemImage,
@@ -78,7 +86,8 @@ export async function getMenuItemsByRestaurant(id) {
         items[catg].push({
             _id: item._id,
             name: item.item.itemName,
-            price: item.item.itemPrice,
+            price: discoutPrc,
+            originalPrice: item.item.itemPrice,
             description: item.item.itemDescription?.slice(0, 9),
             categoryName: item.categoryName,
             image: item.item.itemImage,

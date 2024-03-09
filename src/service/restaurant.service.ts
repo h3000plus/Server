@@ -32,7 +32,7 @@ export async function getFilteredRestaurants(
         resPriceRange: res.priceRange
       };
     });
-
+    console.log(restaurants)
     return restaurants;
   } catch (error) {
     console.log(error);
@@ -71,12 +71,21 @@ export async function getMenuItemsByRestaurant(id: string) {
   const response = await axios.get(`${process.env.MENU_ITEMS}${id}`, {
     headers,
   });
+
+  const discount = await axios.get(`${process.env.RES_DISCOUNT}${id}`, {
+    headers,
+  });
+
   const data = response.data;
+  const discountPrice = discount.data.marketplaceDiscountPercentage;
+
+  console.log(discountPrice);
 
   interface Item {
     _id: string;
     name: string;
     price: string;
+    originalPrice: string;
     description: string;
     categoryName: string;
     image: string;
@@ -98,11 +107,14 @@ export async function getMenuItemsByRestaurant(id: string) {
       items[catg] = [];
     }
 
+    const discoutPrc = item.item.itemPrice - (discountPrice / 100 * item.item.itemPrice) + "";
+
     // items['all'].push(item);
     items["all"].push({
       _id: item._id as string,
       name: item.item.itemName as string,
-      price: item.item.itemPrice as string,
+      price: discoutPrc,
+      originalPrice: item.item.itemPrice as string,
       description: item.item.itemDescription?.slice(0, 9) as string,
       categoryName: item.categoryName,
       image: item.item.itemImage as string,
@@ -111,7 +123,8 @@ export async function getMenuItemsByRestaurant(id: string) {
     items[catg].push({
       _id: item._id as string,
       name: item.item.itemName as string,
-      price: item.item.itemPrice as string,
+      price: discoutPrc,
+      originalPrice: item.item.itemPrice as string,
       description: item.item.itemDescription?.slice(0, 9) as string,
       categoryName: item.categoryName,
       image: item.item.itemImage as string,
