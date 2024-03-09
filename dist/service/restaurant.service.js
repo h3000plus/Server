@@ -20,6 +20,8 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
                 resId: res.restaurantId,
                 resName: res.restaurantName,
                 resImage: res.restaurantCoverPhoto,
+                resDiscount: res.marketplaceDiscountPercentage,
+                resPriceRange: res.priceRange
             };
         });
         return restaurants;

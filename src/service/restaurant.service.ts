@@ -28,6 +28,8 @@ export async function getFilteredRestaurants(
         resId: res.restaurantId,
         resName: res.restaurantName,
         resImage: res.restaurantCoverPhoto,
+        resDiscount: res.marketplaceDiscountPercentage,
+        resPriceRange: res.priceRange
       };
     });
 
