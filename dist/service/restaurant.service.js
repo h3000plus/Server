@@ -130,7 +130,7 @@ export async function getItemDetails(id) {
         name: data.item.itemName,
         image: data.item.itemImage,
         description: data.item.itemDescription,
-        price: discountPrice,
+        price: discoutPrc,
         originalPrice: data.item.itemPrice,
         addon: data.item.options.add.map((ing) => {
             return {
