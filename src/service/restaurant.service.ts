@@ -177,7 +177,7 @@ export async function getItemDetails(id: string) {
     image: data.item.itemImage,
     description: data.item.itemDescription,
     price: discountPrice,
-    orginalPrice: data.item.itemPrice,
+    originalPrice: data.item.itemPrice,
     addon: data.item.options.add.map((ing: any) => {
       return {
         name: ing.ingredientName,
