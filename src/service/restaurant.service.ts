@@ -167,7 +167,7 @@ export async function getItemDetails(id: string) {
     headers,
   });
   const discountPrice = discount.data.marketplaceDiscountPercentage;
-  const discoutPrc = data.item.itemPrice - (discountPrice / 100 * data.item.itemPrice) + "";
+  const discoutPrc = data.item.itemPrice - (discountPrice / 100 * data.item.itemPrice);
 
   // const details: any = data.map( (item: any) => {
   return {
