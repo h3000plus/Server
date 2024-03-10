@@ -118,6 +118,11 @@ export async function getItemDetails(id) {
         headers,
     });
     const data = response.data;
+    const discount = await axios.get(`${process.env.RES_DISCOUNT}${data.restaurantId}`, {
+        headers,
+    });
+    const discountPrice = discount.data.marketplaceDiscountPercentage;
+    const discoutPrc = data.item.itemPrice - (discountPrice / 100 * data.item.itemPrice) + "";
     // const details: any = data.map( (item: any) => {
     return {
         _id: data._id,
@@ -125,7 +130,8 @@ export async function getItemDetails(id) {
         name: data.item.itemName,
         image: data.item.itemImage,
         description: data.item.itemDescription,
-        price: data.item.itemPrice,
+        price: discountPrice,
+        orginalPrice: data.item.itemPrice,
         addon: data.item.options.add.map((ing) => {
             return {
                 name: ing.ingredientName,
