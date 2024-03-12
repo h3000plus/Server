@@ -51,4 +51,7 @@ router.get("/restaurants/favorite/:user_id");
 router.get("/details/:restaurant_id", getRestaurantByIdController);
 router.post("/menu-items-two", createMenuItems);
 
+// restaurant review
+// router.get("/review/:id", getReviewRestaurant);
+
 export default router;

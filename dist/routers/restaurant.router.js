@@ -24,5 +24,7 @@ router.get("/restaurants/favorite/:user_id");
 // restaurant details
 router.get("/details/:restaurant_id", getRestaurantByIdController);
 router.post("/menu-items-two", createMenuItems);
+// restaurant review
+// router.get("/review/:id", getReviewRestaurant);
 export default router;
 //# sourceMappingURL=restaurant.router.js.map
