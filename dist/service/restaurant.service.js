@@ -15,13 +15,16 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
         // const apiUrl = `${process.env.RESTAURANTS_URL}?mode=${mode}&searchTerm=${searchTerm}&cuisine=${cuisine}`;
         const response = await axios.get(apiUrl, { headers });
         const data = response.data;
-        const restaurants = data.map((res) => {
+        const restaurants = data.map(async (res) => {
+            const review_response = await axios.get(`${process.env.RES_REVIEW}${res.restaurantId}`);
+            const review = review_response.data;
             return {
                 resId: res.restaurantId,
                 resName: res.restaurantName,
                 resImage: res.restaurantCoverPhoto,
                 resDiscount: res.marketplaceDiscountPercentage,
-                resPriceRange: res.priceRange
+                resPriceRange: res.priceRange,
+                resReview: review
             };
         });
         console.log(restaurants);
