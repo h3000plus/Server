@@ -6,6 +6,7 @@ Welcome to Bento Marketplace Server! This README.md file serves as a guide to un
 **Delivery:**
   - Allow users to select delivery as an option for receiving their orders.
   - Integrate with delivery services and provide estimated delivery times.
+    
 **Pickup:**
   - Enable users to choose pickup as an option to collect their orders.
 **Reservation:**
