@@ -93,3 +93,6 @@ Welcome to Bento Marketplace Server! This README.md file serves as a guide to un
 3. Install dependencies using npm: ``` npm install ```
 
 4. Start the server: ``` npm run dev ```
+
+### Live Link
+You can access the live version of the app at [Bento Marketplace](https://bento-client-app.vercel.app/). 
