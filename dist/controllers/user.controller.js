@@ -3,13 +3,6 @@ import { comparePassword, generateToken, } from "../utilities/auth.js";
 // signup
 const signupController = async (req, res) => {
     try {
-        /*  const hashedPassword = await generateHash(req.body.password);
-     
-         const userObject = {
-           ...req.body,
-           password: hashedPassword,
-         };
-         const user = await createUser(userObject); */
         console.log('incoming data from fe', req.body);
         const user = await createUser(req.body);
         res.status(201).json({
@@ -94,7 +87,7 @@ const postManyCustomers = async (req, res) => {
 const getUserDetailsByIdController = async (req, res) => {
     try {
         console.log('from inside controller', req.params.id);
-        const id = req.params.id; // Access params using square brackets for keys containing hyphens
+        const id = req.params.id;
         const userDetails = await getUserDetails(id);
         res.status(200).json(userDetails);
     }

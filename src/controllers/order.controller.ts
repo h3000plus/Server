@@ -21,34 +21,6 @@ import {
 import { sendOrderToKDS, sendToInventory, sendToRider } from "../service/orderMQ.service.js";
 import { IOrderForInventory } from "../interfaces/inventory.interface.js";
 import { IOrder } from "../interfaces/order.interface.js";
-// import { io } from "../app.js";
-
-// OLD AND UNTOUCHED
-// export const createOrderController = async (
-//   req: Request,
-//   res: Response
-// ): Promise<void> => {
-//   try {
-//     const orderData = req.body;
-//     orderData.userId = req.body.user.id;
-
-//     const createdOrder = await createOrder(orderData);
-
-//     const detailedOrder = await prepareForSkeleton(createdOrder);
-
-//     const riderOrder = await prepareForRider(detailedOrder, orderData);
-
-//     const riderResponse = await sendToRider(riderOrder);
-
-//     const skeletonResponse = await sendToSkeleton(detailedOrder);
-
-//     res.status(201).json("order Posted");
-//     // res.status(201).json(createdOrder);
-//   } catch (error) {
-//     console.error("Error creating order:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
 
 // USING MQ
 export const createOrderController = async (
@@ -114,9 +86,7 @@ export const getAllCompletedOrders = async (
   res: Response
 ): Promise<void> => {
   try {
-    // const userId = req.params.userId;
     const userId = req.body.user.id;
-    // req.headers[user-id]
 
     if (!userId) {
       res.status(400).json({ error: "User ID is required." });
@@ -137,10 +107,7 @@ export const getAllProcessingOrders = async (
   res: Response
 ): Promise<void> => {
   try {
-    // const userId = req.params.userId;
     const userId = req.body.user.id;
-
-    // req.headers[user-id]
 
     if (!userId) {
       res.status(400).json({ error: "User ID is required." });

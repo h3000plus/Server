@@ -3,11 +3,8 @@ import {
   getAllDeliveryRestaurant,
   createRestaurant,
   searchAllDeliveryRestaurant,
-  getRestaurantById,
   getAllRestaurantsByCuisine,
 } from "../models/restaurant/query.js";
-
-import fs from "fs";
 
 import {
   getCuisines,
@@ -23,9 +20,7 @@ export const getAllDeliveryRestaurantController = async (
     const deliveryRestaurants = await getAllDeliveryRestaurant();
     res.status(200).json(deliveryRestaurants);
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
+    res.status(500).send((error as Error).message);
   }
 };
 
@@ -41,11 +36,8 @@ export const getFilteredRestaurantsController = async (
     const restaurants = await getFilteredRestaurants(mode, searchTerm, cuisine);
 
     res.status(200).json(restaurants);
-    // res.status(200).json(req.query);
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
+    res.status(500).send((error as Error).message);
   }
 };
 
@@ -54,8 +46,7 @@ export const getCuisinesController = async (req: Request, res: Response) => {
     const cuisines = await getCuisines();
     res.json({ cuisines });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).send((error as Error).message);
   }
 };
 
@@ -68,9 +59,7 @@ export const createRestaurantController = async (
     const createdRestaurant = await createRestaurant(restaurantInfo);
     res.status(201).json(createdRestaurant);
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
+    res.status(500).send((error as Error).message);
   }
 };
 
@@ -85,9 +74,7 @@ export const searchAllDeliveryRestaurantsController = async (
     const results = await searchAllDeliveryRestaurant(searchTerm);
     res.json(results);
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
+    res.status(500).send((error as Error).message);
   }
 };
 
@@ -106,9 +93,7 @@ export const getRestaurantByIdController = async (
       res.status(404).json({ error: "Restaurant not found" });
     }
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
+    res.status(500).send((error as Error).message);
   }
 };
 
@@ -127,24 +112,6 @@ export const getAllRestaurantsByCuisineController = async (
       res.status(404).json({ error: "Restaurant not found" });
     }
   } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const createMenuItems = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    fs.readFile(__dirname + "../data/menu.json", (err, data) => {
-      console.log(data);
-      // data = JSON.parse(data);
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Internal Server Error",
-    });
+    res.status(500).send((error as Error).message);
   }
 };

@@ -6,7 +6,6 @@ export const getRecommendedRestaurantsController = async (req, res) => {
         const user = await getUserDetails(id);
         const recommended = await recommendedEngine(user);
         const prepareForFronted = await restaurantsMatching(recommended);
-        // console.log(prepareForFronted)
         res.send(prepareForFronted);
     }
     catch (error) {

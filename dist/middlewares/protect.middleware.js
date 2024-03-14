@@ -9,7 +9,7 @@ const protectMiddleware = (req, res, next) => {
     try {
         const user = verifyToken(token);
         if (!user)
-            throw Error("user doesnt exist");
+            throw Error("user does not exist");
         req.body.user = user;
         next();
     }

@@ -19,7 +19,7 @@ const protectMiddleware = (
   }
   try {
     const user = verifyToken(token);
-    if (!user) throw Error("user doesnt exist");
+    if (!user) throw Error("user does not exist");
     req.body.user = user;
 
     next();

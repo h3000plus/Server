@@ -10,15 +10,11 @@ import restaurantRouter from './routers/restaurant.router.js';
 import cuisineRouter from './routers/category.router.js';
 import recommendedEngine from './routers/recommended.engine.router.js';
 import { closeMQConnection, connectToMQ } from './service/orderMQ.service.js';
-// import initializeSocket from './utilities/socket.js';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 config();
-// connect ot MongoDB database
-// const dbUri: string = config.DB_URI
 const port = 3000;
 const app = express();
-// const server = http.createServer(app);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
@@ -29,7 +25,6 @@ const io = new Server(httpServer, {
     },
 });
 app.use((req, res, next) => {
-    // Attach io to app locals
     res.locals.io = io;
     next();
 });
@@ -43,22 +38,10 @@ app.use(itemRouter);
 app.use(orderRouter);
 app.use(cuisineRouter);
 app.use(recommendedEngine);
-app.get('/', (req, res) => {
-    res.status(200).send('Hello World!');
-});
-// initializeSocket(server);
-// io.on('connection', socket => {
-//     console.log('A user connected');
-//     // Handle disconnect event
-//     socket.on('disconnect', () => {
-//       console.log('User disconnected');
-//     });
-//   });
 async function main() {
     try {
         await mongoose.connect(process.env.DB_URI);
         console.log('mongoose connected');
-        // Start consuming message from RabbitMQ
         await connectToMQ();
         console.log('MQ Connected');
         httpServer.listen(port, () => {
@@ -69,18 +52,16 @@ async function main() {
         console.log(error);
     }
 }
-main();
 io.on("connection", (socket) => {
     socket.emit("me", socket.id);
     socket.on("join", (data) => {
-        console.log("Room userId:", data.userId);
         socket.join(data.userId);
     });
 });
-// Handle Server Shutdown. Close MQ Connection
 process.on('SIGINT', async () => {
     console.log('Closing MQ connection');
     await closeMQConnection();
     process.exit(0);
 });
+main();
 //# sourceMappingURL=app.js.map

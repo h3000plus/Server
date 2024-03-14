@@ -7,7 +7,7 @@ export const createMenuItemController = async (req, res) => {
         res.status(201).json(menuItem);
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).send(error.message);
     }
 };
 export const getMenuItemByIdController = async (req, res) => {
@@ -17,7 +17,7 @@ export const getMenuItemByIdController = async (req, res) => {
         res.status(200).json(oneMenuItem);
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).send(error.message);
     }
 };
 export const getMenuItemByResIdController = async (req, res) => {
@@ -27,25 +27,21 @@ export const getMenuItemByResIdController = async (req, res) => {
         res.status(200).json(resItems);
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).send(error.message);
     }
 };
 export const searchRestaurantItemsController = async (req, res) => {
     try {
         const { restaurantId } = req.params;
         const { searchTerm } = req.query;
-        // Check if required parameters are provided
         if (!restaurantId || !searchTerm) {
             return res.status(400).json({ error: 'restaurantId and searchTerm are required parameters.' });
         }
-        // Call the searchRestaurantItems function
         const restaurantItems = await searchRestaurantItems(String(restaurantId), String(searchTerm));
-        // Return the results
         res.status(200).json(restaurantItems);
     }
     catch (error) {
-        console.error('Controller Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).send(error.message);
     }
 };
 //# sourceMappingURL=item.controller.js.map

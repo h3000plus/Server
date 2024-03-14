@@ -15,7 +15,7 @@ export async function getFilteredRestaurants(mode, searchTerm, cuisine) {
         // const apiUrl = `${process.env.RESTAURANTS_URL}?mode=${mode}&searchTerm=${searchTerm}&cuisine=${cuisine}`;
         const response = await axios.get(apiUrl, { headers });
         const data = response.data;
-        const restaurants = data.map(async (res) => {
+        const restaurants = data.map((res) => {
             return {
                 resId: res.restaurantId,
                 resName: res.restaurantName,
