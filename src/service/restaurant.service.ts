@@ -150,6 +150,7 @@ export async function getRestaurantDetails(id: string) {
 
   return {
     name: data.restaurantName,
+    cPhoto: data.restaurantCoverPhoto
   };
 }
 
